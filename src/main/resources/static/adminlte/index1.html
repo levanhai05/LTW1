@@ -1,0 +1,2072 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8"/>
+<title>Quản lý Đào tạo</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" crossorigin="anonymous"/>
+<style>
+:root{
+  --navy:#0f1c3f;--navy-mid:#162247;--navy-light:#1e2f5a;
+  --accent:#4f8ef7;--accent-soft:rgba(79,142,247,.12);
+  --surface:#fff;--surface-2:#f5f7fc;--surface-3:#eef1f8;
+  --border:rgba(15,28,63,.10);--border-strong:rgba(15,28,63,.18);
+  --text-primary:#0f1c3f;--text-secondary:#4a5578;--text-muted:#8892ab;
+  --success:#16a34a;--success-bg:#dcfce7;
+  --danger:#dc2626;--danger-bg:#fee2e2;
+  --warning:#d97706;--warning-bg:#fef3c7;
+  --info:#0284c7;--info-bg:#e0f2fe;
+  --purple:#7c3aed;--purple-bg:#ede9fe;
+  --sidebar-w:260px;--header-h:60px;
+  --font:'Be Vietnam Pro',sans-serif;--mono:'JetBrains Mono',monospace;
+  --radius:10px;--radius-lg:14px;
+  --shadow-sm:0 1px 3px rgba(15,28,63,.08);
+  --shadow:0 4px 16px rgba(15,28,63,.10);
+  --shadow-lg:0 8px 32px rgba(15,28,63,.14)
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font-family:var(--font);color:var(--text-primary);background:var(--surface-2)}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border-strong);border-radius:99px}
+
+/* ── AUTH ── */
+#auth-overlay{position:fixed;inset:0;z-index:99999;background:linear-gradient(135deg,#060e22,#0f1c3f 45%,#1a2e6b);display:flex;align-items:center;justify-content:center}
+#auth-overlay::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 20% 20%,rgba(79,142,247,.18),transparent 60%),radial-gradient(ellipse 60% 80% at 80% 80%,rgba(79,142,247,.12),transparent 60%)}
+#auth-overlay.hidden{display:none}
+.auth-card{position:relative;z-index:1;background:rgba(255,255,255,.97);backdrop-filter:blur(20px);border-radius:20px;box-shadow:0 32px 80px rgba(6,14,34,.6);width:100%;max-width:440px;padding:2.5rem 2rem 2rem;animation:authIn .5s cubic-bezier(.22,.61,.36,1);overflow:hidden}
+.auth-form .reg-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px 14px;min-width:0;width:100%}
+@keyframes authIn{from{opacity:0;transform:translateY(28px) scale(.97)}to{opacity:1;transform:none}}
+.auth-brand{text-align:center;margin-bottom:1.75rem}
+.auth-brand-icon{width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,#0f1c3f,#2a4aaa);display:inline-flex;align-items:center;justify-content:center;margin-bottom:.75rem;box-shadow:0 8px 24px rgba(15,28,63,.28)}
+.auth-brand-icon i{font-size:26px;color:#fff}
+.auth-brand h4{font-size:1.2rem;font-weight:700;color:var(--navy)}
+.auth-brand p{font-size:.82rem;color:var(--text-muted);margin-top:2px}
+.auth-tabs{display:flex;gap:4px;background:var(--surface-3);border-radius:10px;padding:4px;margin-bottom:1.5rem}
+.auth-tab{flex:1;text-align:center;padding:.5rem;font-size:.88rem;font-weight:600;cursor:pointer;border-radius:7px;color:var(--text-secondary);transition:all .2s;border:none;background:none}
+.auth-tab.active{background:#fff;color:var(--navy);box-shadow:0 1px 4px rgba(15,28,63,.12)}
+.auth-form{display:none}.auth-form.active{display:block}
+.form-label{font-size:.82rem;font-weight:600;color:var(--text-secondary);margin-bottom:5px;display:block}
+.form-group{margin-bottom:.85rem;min-width:0}
+.input-wrap{display:flex;align-items:center;border:1.5px solid var(--border-strong);border-radius:9px;background:var(--surface);transition:all .15s;overflow:hidden;min-width:0}
+.input-wrap:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px rgba(79,142,247,.15)}
+.input-wrap .icon{padding:0 10px 0 12px;color:var(--text-muted);font-size:15px;display:flex;align-items:center}
+.input-wrap input{flex:1;border:none;outline:none;padding:9px 10px 9px 0;font-size:.9rem;font-family:var(--font);color:var(--text-primary);background:transparent;min-width:0}
+.input-wrap input::placeholder{color:var(--text-muted)}
+.input-wrap button{border:none;background:none;padding:0 12px;cursor:pointer;color:var(--text-muted);font-size:14px;height:38px}
+.btn-auth-primary{width:100%;padding:10px;border:none;border-radius:9px;background:linear-gradient(135deg,#162247,#2a4aaa);color:#fff;font-weight:700;font-size:.92rem;font-family:var(--font);cursor:pointer;margin-top:.5rem;transition:all .2s;box-shadow:0 4px 14px rgba(15,28,63,.28)}
+.btn-auth-primary:hover{background:linear-gradient(135deg,#0f1c3f,#3b5fd4);transform:translateY(-1px)}
+.quick-divider{text-align:center;font-size:.75rem;color:var(--text-muted);margin:1rem 0 .75rem;position:relative}
+.quick-divider::before,.quick-divider::after{content:'';position:absolute;top:50%;height:1px;width:38%;background:var(--border-strong)}
+.quick-divider::before{left:0}.quick-divider::after{right:0}
+.quick-btns{display:flex;gap:8px}
+.quick-btn{flex:1;padding:7px 4px;border:1.5px solid var(--border-strong);border-radius:8px;background:var(--surface);cursor:pointer;font-size:.78rem;font-weight:600;color:var(--text-secondary);font-family:var(--font);transition:all .15s;text-align:center}
+.quick-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+.quick-btn i{display:block;font-size:15px;margin-bottom:2px}
+.alert-inline{padding:8px 12px;border-radius:8px;font-size:.83rem;margin-bottom:.75rem;display:none}
+.alert-inline.show{display:block}
+.alert-danger{background:var(--danger-bg);color:#991b1b;border:1px solid #fca5a5}
+.alert-success{background:var(--success-bg);color:#166534;border:1px solid #86efac}
+.form-check-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
+.form-check-row label{font-size:.82rem;color:var(--text-secondary);display:flex;align-items:center;gap:6px;cursor:pointer}
+.form-check-row a{font-size:.82rem;color:var(--accent);text-decoration:none}
+input[type="checkbox"]{accent-color:var(--accent)}
+
+/* ── LAYOUT ── */
+.app-wrapper{display:flex;height:100vh;overflow:hidden}
+.sidebar{width:var(--sidebar-w);background:var(--navy);flex-shrink:0;display:flex;flex-direction:column;overflow:hidden;position:relative;transition:width .25s}
+.sidebar-brand{padding:0 1.25rem;height:var(--header-h);display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(255,255,255,.06);flex-shrink:0}
+.sidebar-brand-icon{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#3b7cf4,#60a5fa);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sidebar-brand-icon i{font-size:17px;color:#fff}
+.sidebar-brand-text{font-size:.9rem;font-weight:700;color:#fff;white-space:nowrap}
+.sidebar-brand-sub{font-size:.7rem;color:rgba(255,255,255,.45)}
+.sidebar-nav{flex:1;overflow-y:auto;padding:1rem .75rem}
+.nav-section{margin-bottom:.25rem}
+.nav-section-label{font-size:.65rem;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:rgba(255,255,255,.3);padding:.6rem .6rem .3rem}
+.nav-item{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:8px;cursor:pointer;transition:all .15s;color:rgba(255,255,255,.65);font-size:.86rem;font-weight:500;text-decoration:none;margin-bottom:2px}
+.nav-item i{font-size:17px;flex-shrink:0}
+.nav-item:hover{background:rgba(255,255,255,.07);color:rgba(255,255,255,.9)}
+.nav-item.active{background:rgba(79,142,247,.2);color:#93bbfd;border:1px solid rgba(79,142,247,.25)}
+.nav-item.active i{color:#4f8ef7}
+.main-area{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+.app-header{height:var(--header-h);background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 1.5rem;gap:1rem;flex-shrink:0;box-shadow:var(--shadow-sm)}
+.header-title{font-size:1rem;font-weight:700;color:var(--navy);flex:1}
+.header-subtitle{font-size:.78rem;color:var(--text-muted)}
+.user-chip{display:flex;align-items:center;gap:8px;cursor:pointer;padding:5px 12px 5px 6px;border-radius:99px;border:1px solid var(--border-strong);background:var(--surface-2);transition:all .15s}
+.user-chip:hover{background:var(--surface-3)}
+.user-avatar{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#162247,#2a4aaa);display:flex;align-items:center;justify-content:center}
+.user-avatar i{font-size:16px;color:#fff}
+.user-name{font-size:.83rem;font-weight:600;color:var(--text-primary)}
+.user-role{font-size:.72rem;color:var(--text-muted)}
+.header-btn{width:36px;height:36px;border-radius:8px;border:1px solid var(--border);background:var(--surface-2);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-secondary);font-size:17px;transition:all .15s}
+.header-btn:hover{background:var(--surface-3)}
+.app-content{flex:1;overflow-y:auto;padding:1.5rem}
+
+/* ── TABS ── */
+.tab-bar{display:flex;gap:2px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:4px;margin-bottom:1.25rem;flex-wrap:wrap;box-shadow:var(--shadow-sm)}
+.tab-btn{display:flex;align-items:center;gap:6px;padding:7px 14px;border-radius:8px;border:none;background:none;font-family:var(--font);font-size:.83rem;font-weight:500;color:var(--text-secondary);cursor:pointer;transition:all .15s;white-space:nowrap}
+.tab-btn:hover{background:var(--surface-2)}
+.tab-btn.active{background:var(--navy);color:#fff;box-shadow:0 2px 8px rgba(15,28,63,.2)}
+.tab-btn i{font-size:14px}
+.tab-content{display:none}
+.tab-content.active{display:block;animation:fadeUp .2s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* ── CARD ── */
+.card{background:var(--surface);border-radius:var(--radius-lg);border:1px solid var(--border);box-shadow:var(--shadow-sm);overflow:hidden}
+.card-header{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.25rem;border-bottom:1px solid var(--border);background:linear-gradient(to right,var(--surface),var(--surface-2))}
+.card-header-left{display:flex;align-items:center;gap:10px}
+.card-header-icon{width:34px;height:34px;border-radius:9px;background:var(--accent-soft);display:flex;align-items:center;justify-content:center}
+.card-header-icon i{font-size:17px;color:var(--accent)}
+.card-title{font-size:.95rem;font-weight:700;color:var(--navy)}
+.card-subtitle{font-size:.75rem;color:var(--text-muted)}
+.card-body{padding:1.25rem}
+
+/* ── TOOLBAR ── */
+.toolbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:1rem}
+.search-box{display:flex;align-items:center;gap:7px;background:var(--surface-2);border:1px solid var(--border);border-radius:8px;padding:6px 12px;min-width:180px;transition:all .15s}
+.search-box:focus-within{border-color:var(--accent);background:var(--surface);box-shadow:0 0 0 3px rgba(79,142,247,.1)}
+.search-box i{font-size:14px;color:var(--text-muted);flex-shrink:0}
+.search-box input{border:none;outline:none;background:none;font-size:.85rem;font-family:var(--font);color:var(--text-primary);width:100%}
+.search-box input::placeholder{color:var(--text-muted)}
+.filter-select{padding:6px 10px;border:1px solid var(--border);border-radius:8px;background:var(--surface-2);font-family:var(--font);font-size:.85rem;color:var(--text-secondary);outline:none;cursor:pointer}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:8px;border:none;font-family:var(--font);font-size:.83rem;font-weight:600;cursor:pointer;transition:all .15s;white-space:nowrap}
+.btn i{font-size:14px}
+.btn-primary{background:var(--navy);color:#fff;box-shadow:0 2px 8px rgba(15,28,63,.2)}
+.btn-primary:hover{background:var(--navy-light);transform:translateY(-1px)}
+.btn-outline{background:transparent;border:1px solid var(--border-strong);color:var(--text-secondary)}
+.btn-outline:hover{background:var(--surface-2)}
+.btn-success-outline{background:transparent;border:1px solid #86efac;color:#166534}
+.btn-success-outline:hover{background:var(--success-bg)}
+.btn-sm{padding:5px 10px;font-size:.78rem}
+.btn-xs{padding:3px 8px;font-size:.74rem}
+
+/* ── TABLE ── */
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:separate;border-spacing:0}
+thead th{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);padding:10px 14px;background:var(--surface-2);border-bottom:1px solid var(--border);white-space:nowrap}
+thead th:first-child{border-radius:var(--radius) 0 0 0}
+thead th:last-child{border-radius:0 var(--radius) 0 0}
+tbody tr{transition:background .1s}
+tbody tr:hover{background:var(--surface-2)}
+tbody td{padding:10px 14px;border-bottom:1px solid var(--border);font-size:.86rem;color:var(--text-primary);vertical-align:middle}
+tbody tr:last-child td{border-bottom:none}
+.mono{font-family:var(--mono);font-size:.8rem;color:var(--text-secondary)}
+.strong{font-weight:700;color:var(--navy)}
+
+/* ── BADGES ── */
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:99px;font-size:.73rem;font-weight:600}
+.badge::before{content:'';width:5px;height:5px;border-radius:50%;background:currentColor;opacity:.7;flex-shrink:0}
+.badge-active{background:var(--success-bg);color:var(--success)}
+.badge-inactive{background:var(--danger-bg);color:var(--danger)}
+.badge-open{background:var(--success-bg);color:var(--success)}
+.badge-closed{background:var(--surface-3);color:var(--text-muted)}
+.badge-cancelled{background:var(--danger-bg);color:var(--danger)}
+.badge-studying{background:var(--info-bg);color:var(--info)}
+.badge-completed{background:var(--success-bg);color:var(--success)}
+.badge-dropped{background:var(--danger-bg);color:var(--danger)}
+.badge-role{background:var(--accent-soft);color:var(--accent);border-radius:6px}
+.badge-role::before{display:none}
+.badge-main{background:rgba(15,28,63,.08);color:var(--navy)}
+.badge-sub{background:var(--warning-bg);color:var(--warning)}
+.badge-k23{background:#e0f2fe;color:#0369a1}
+.badge-k23::before{background:#0369a1}
+.badge-k24{background:#ede9fe;color:#6d28d9}
+.badge-k24::before{background:#6d28d9}
+.badge-shared{background:#fef3c7;color:#92400e}
+.badge-shared::before{background:#92400e}
+
+/* ── SCHOOL YEAR CARDS ── */
+.sy-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:1.5rem}
+.sy-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-sm);transition:box-shadow .15s}
+.sy-card:hover{box-shadow:var(--shadow)}
+.sy-card-head{padding:14px 16px 10px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between}
+.sy-card-title{font-size:.92rem;font-weight:700;color:var(--navy)}
+.sy-card-sub{font-size:.75rem;color:var(--text-muted);margin-top:2px}
+.sy-card-body{padding:12px 16px}
+.sy-sem-list{display:flex;flex-direction:column;gap:6px}
+.sy-sem-item{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;border-radius:8px;border:1px solid;font-size:.82rem}
+.sy-sem-hk1{background:#eef2ff;color:#3730a3;border-color:#c7d2fe}
+.sy-sem-hk2{background:#f0fdf4;color:#166534;border-color:#bbf7d0}
+.sy-sem-name{font-weight:600}
+.sy-sem-dates{font-size:.74rem;opacity:.75;margin-top:1px}
+
+/* ── AY BANNER ── */
+.ay-banner{background:linear-gradient(135deg,var(--navy-mid),var(--navy-light));border-radius:var(--radius-lg);padding:1.25rem 1.5rem;margin-bottom:1rem;color:#fff;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.ay-banner-title{font-size:.95rem;font-weight:700}
+.ay-banner-sub{font-size:.78rem;color:rgba(255,255,255,.65);margin-top:2px}
+.ay-banner-stats{display:flex;gap:20px}
+.ay-stat{text-align:center}
+.ay-stat-n{font-size:1.4rem;font-weight:700;color:#fff}
+.ay-stat-l{font-size:.7rem;color:rgba(255,255,255,.55);text-transform:uppercase;letter-spacing:.05em}
+
+/* ── DETAIL PANEL (slide in) ── */
+.detail-panel{position:fixed;right:0;top:0;bottom:0;width:420px;background:var(--surface);box-shadow:var(--shadow-lg);z-index:500;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .3s cubic-bezier(.22,.61,.36,1);border-left:1px solid var(--border)}
+.detail-panel.open{transform:translateX(0)}
+.detail-panel-head{padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.detail-panel-body{flex:1;overflow-y:auto;padding:1.25rem}
+.detail-section{margin-bottom:1.25rem}
+.detail-section-title{font-size:.73rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted);margin-bottom:.6rem;padding-bottom:.4rem;border-bottom:1px solid var(--border)}
+.detail-row{display:flex;justify-content:space-between;align-items:flex-start;padding:5px 0;gap:8px}
+.detail-label{font-size:.8rem;color:var(--text-muted);flex-shrink:0}
+.detail-value{font-size:.83rem;font-weight:600;color:var(--navy);text-align:right}
+.course-chip{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:7px;background:var(--surface-2);border:1px solid var(--border);font-size:.8rem;margin:3px;cursor:pointer;transition:all .15s}
+.course-chip:hover{border-color:var(--accent);background:var(--accent-soft);color:var(--accent)}
+.student-item{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--border)}
+.student-item:last-child{border-bottom:none}
+.student-avatar-sm{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#162247,#2a4aaa);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.student-avatar-sm span{font-size:10px;font-weight:700;color:#fff}
+
+/* ── DROPDOWN ── */
+.dropdown{position:relative}
+.dropdown-menu{position:absolute;top:calc(100% + 6px);right:0;z-index:100;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);min-width:200px;overflow:hidden;display:none}
+.dropdown-menu.show{display:block}
+.dropdown-item{display:flex;align-items:center;gap:9px;padding:9px 14px;font-size:.85rem;color:var(--text-primary);cursor:pointer;transition:background .1s;text-decoration:none;border:none;background:none;width:100%;font-family:var(--font)}
+.dropdown-item:hover{background:var(--surface-2)}
+.dropdown-item i{font-size:15px;color:var(--text-muted)}
+.dropdown-item.danger{color:var(--danger)}
+.dropdown-item.danger i{color:var(--danger)}
+.dropdown-divider{height:1px;background:var(--border);margin:4px 0}
+.dropdown-header{padding:10px 14px 6px}
+.dropdown-header-name{font-weight:700;font-size:.88rem;color:var(--navy)}
+.dropdown-header-role{font-size:.75rem;color:var(--text-muted)}
+
+/* ── MODAL ── */
+.modal-overlay{position:fixed;inset:0;z-index:8000;background:rgba(6,14,34,.55);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;padding:1rem;animation:fadeIn .15s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal-overlay.hidden{display:none}
+.modal-box{background:var(--surface);border-radius:18px;box-shadow:var(--shadow-lg),0 0 0 1px var(--border);width:100%;max-width:520px;max-height:90vh;display:flex;flex-direction:column;animation:modalIn .2s cubic-bezier(.22,.61,.36,1)}
+.modal-box.modal-lg{max-width:680px}
+@keyframes modalIn{from{opacity:0;transform:scale(.96) translateY(12px)}to{opacity:1;transform:none}}
+.modal-head{padding:1.25rem 1.5rem 1rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.modal-head-left{display:flex;align-items:center;gap:10px}
+.modal-head-badge{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center}
+.modal-head-badge i{font-size:18px}
+.modal-title{font-size:.95rem;font-weight:700;color:var(--navy)}
+.modal-close{width:32px;height:32px;border-radius:8px;border:1px solid var(--border);background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--text-muted);transition:all .15s}
+.modal-close:hover{background:var(--danger-bg);color:var(--danger)}
+.modal-body{padding:1.25rem 1.5rem;overflow-y:auto;flex:1}
+.modal-foot{padding:1rem 1.5rem;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px}
+.field-group{display:grid;gap:10px 14px}
+.field{display:flex;flex-direction:column;gap:5px}
+.field label{font-size:.78rem;font-weight:600;color:var(--text-secondary)}
+.field label .req{color:var(--danger);margin-left:2px}
+.field input,.field textarea,.field select{padding:8px 11px;border:1.5px solid var(--border-strong);border-radius:8px;font-family:var(--font);font-size:.87rem;color:var(--text-primary);background:var(--surface);outline:none;transition:all .15s}
+.field input:focus,.field textarea:focus,.field select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(79,142,247,.12)}
+.field textarea{resize:vertical;min-height:68px}
+.field select{cursor:pointer}
+.toggle-row{display:flex;align-items:center;gap:10px;padding:8px 11px;border-radius:8px;border:1.5px solid var(--border);background:var(--surface-2)}
+.toggle-label{font-size:.87rem;color:var(--text-secondary);flex:1}
+.toggle-switch{position:relative;display:inline-block;width:38px;height:22px}
+.toggle-switch input{opacity:0;width:0;height:0}
+.toggle-slider{position:absolute;inset:0;cursor:pointer;background:var(--border-strong);border-radius:22px;transition:.25s}
+.toggle-slider::before{content:'';position:absolute;height:16px;width:16px;left:3px;bottom:3px;background:white;border-radius:50%;transition:.25s;box-shadow:0 1px 4px rgba(0,0,0,.2)}
+.toggle-switch input:checked + .toggle-slider{background:var(--success)}
+.toggle-switch input:checked + .toggle-slider::before{transform:translateX(16px)}
+.btn-modal-cancel{background:var(--surface-2);border:1px solid var(--border-strong);color:var(--text-secondary)}
+.btn-modal-cancel:hover{background:var(--surface-3)}
+
+/* ── SELECT with datalist feel ── */
+.field-hint{font-size:.74rem;color:var(--text-muted);margin-top:3px}
+
+/* ── ACTION ── */
+.action-btn{width:30px;height:30px;border-radius:7px;border:1px solid var(--border);background:var(--surface);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;font-size:13px;color:var(--text-secondary);transition:all .15s;margin-right:4px}
+.action-btn:hover.edit{background:#fef9c3;border-color:#fde047;color:#854d0e}
+.action-btn:hover.del{background:var(--danger-bg);border-color:#fca5a5;color:var(--danger)}
+.action-btn:hover.view{background:var(--info-bg);border-color:#7dd3fc;color:var(--info)}
+
+/* ── TOAST ── */
+#toast-container{position:fixed;top:1rem;right:1rem;z-index:99998;display:flex;flex-direction:column;gap:8px}
+.toast{display:flex;align-items:center;gap:10px;padding:11px 16px;border-radius:10px;font-size:.85rem;font-weight:500;box-shadow:var(--shadow);min-width:240px;max-width:360px;animation:toastIn .25s cubic-bezier(.22,.61,.36,1)}
+@keyframes toastIn{from{transform:translateX(100%);opacity:0}to{transform:none;opacity:1}}
+.toast-success{background:#f0fdf4;border:1px solid #86efac;color:#14532d}
+.toast-error{background:#fff1f2;border:1px solid #fecdd3;color:#881337}
+.toast i{font-size:17px}
+
+/* ── MISC ── */
+.empty-state{text-align:center;padding:3rem 2rem;color:var(--text-muted)}
+.empty-state i{font-size:36px;margin-bottom:.5rem;display:block;opacity:.4}
+.empty-state p{font-size:.87rem}
+.loading-state{text-align:center;padding:2rem}
+.spinner{width:28px;height:28px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;display:inline-block}
+@keyframes spin{to{transform:rotate(360deg)}}
+.generated-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:99px;font-size:.72rem;font-weight:600;background:#fef3c7;color:#92400e;border:1px solid #fde68a}
+.info-box{background:var(--info-bg);border:1px solid #bae6fd;border-radius:8px;padding:10px 12px;font-size:.82rem;color:#075985;display:flex;gap:8px;align-items:flex-start}
+.warn-box{background:#fef3c7;border:1px solid #fde68a;border-radius:8px;padding:10px 12px;font-size:.82rem;color:#78350f;display:flex;gap:8px;align-items:flex-start}
+.divider-label{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted);margin:12px 0 8px}
+
+/* breadcrumb */
+.breadcrumb{display:flex;align-items:center;gap:4px;font-size:.78rem;color:var(--text-muted);margin-bottom:.75rem;flex-wrap:wrap}
+.breadcrumb a{color:var(--accent);text-decoration:none;cursor:pointer}
+.breadcrumb a:hover{text-decoration:underline}
+.breadcrumb .sep{opacity:.4}
+
+/* stats row */
+.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:1.25rem}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px 16px;box-shadow:var(--shadow-sm)}
+.stat-card-n{font-size:1.6rem;font-weight:700;color:var(--navy)}
+.stat-card-l{font-size:.73rem;color:var(--text-muted);margin-top:2px}
+.stat-card-icon{font-size:22px;margin-bottom:6px}
+
+@media(max-width:768px){.sidebar{display:none}.tab-btn span{display:none}.detail-panel{width:100%}}
+</style>
+</head>
+<body>
+
+<!-- AUTH OVERLAY -->
+<div id="auth-overlay">
+  <div class="auth-card">
+    <div class="auth-brand">
+      <div class="auth-brand-icon"><i class="bi bi-mortarboard-fill"></i></div>
+      <h4>Quản lý Đào tạo</h4>
+      <p>Hệ thống Quản lý Đào tạo Đại học</p>
+    </div>
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tab-login-btn" onclick="switchAuthTab('login')"><i class="bi bi-box-arrow-in-right" style="margin-right:5px"></i>Đăng nhập</button>
+      <button class="auth-tab" id="tab-register-btn" onclick="switchAuthTab('register')"><i class="bi bi-person-plus" style="margin-right:5px"></i>Đăng ký</button>
+    </div>
+    <div class="auth-form active" id="form-login">
+      <div class="alert-inline alert-danger" id="login-error"></div>
+      <div class="form-group">
+        <label class="form-label">Tên đăng nhập</label>
+        <div class="input-wrap"><span class="icon"><i class="bi bi-person"></i></span><input type="text" id="login-username" placeholder="Nhập tên đăng nhập" autocomplete="username"></div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Mật khẩu</label>
+        <div class="input-wrap"><span class="icon"><i class="bi bi-lock"></i></span><input type="password" id="login-password" placeholder="Nhập mật khẩu" autocomplete="current-password"><button onclick="togglePwd('login-password',this)"><i class="bi bi-eye"></i></button></div>
+      </div>
+      <div class="form-check-row">
+        <label><input type="checkbox" id="remember-me"> Ghi nhớ đăng nhập</label>
+        <a href="#">Quên mật khẩu?</a>
+      </div>
+      <button class="btn-auth-primary" onclick="doLogin()"><i class="bi bi-box-arrow-in-right" style="margin-right:7px"></i>Đăng nhập</button>
+      <div class="quick-divider">hoặc đăng nhập nhanh</div>
+      <div class="quick-btns">
+        <button class="quick-btn" onclick="quickLogin('admin','123456')"><i class="bi bi-shield-fill"></i>Admin</button>
+        <button class="quick-btn" onclick="quickLogin('giaovu','123456')"><i class="bi bi-clipboard-fill"></i>Giáo vụ</button>
+        <button class="quick-btn" onclick="quickLogin('sinhvien','123456')"><i class="bi bi-person-fill"></i>Sinh viên</button>
+      </div>
+    </div>
+    <div class="auth-form" id="form-register">
+      <div class="alert-inline alert-danger" id="register-error"></div>
+      <div class="alert-inline alert-success" id="register-success"></div>
+      <div class="reg-grid">
+        <div class="form-group" style="grid-column:1/-1"><label class="form-label">Họ và tên <span style="color:var(--danger)">*</span></label><div class="input-wrap"><span class="icon"><i class="bi bi-person-badge"></i></span><input type="text" id="reg-fullname" placeholder="Nguyễn Văn A"></div></div>
+        <div class="form-group" style="grid-column:1/-1"><label class="form-label">Tên đăng nhập <span style="color:var(--danger)">*</span></label><div class="input-wrap"><span class="icon"><i class="bi bi-at"></i></span><input type="text" id="reg-username" placeholder="Ít nhất 4 ký tự"></div></div>
+        <div class="form-group"><label class="form-label">Mật khẩu <span style="color:var(--danger)">*</span></label><div class="input-wrap"><span class="icon"><i class="bi bi-lock"></i></span><input type="password" id="reg-password" placeholder="≥ 6 ký tự"><button onclick="togglePwd('reg-password',this)"><i class="bi bi-eye"></i></button></div></div>
+        <div class="form-group"><label class="form-label">Xác nhận MK <span style="color:var(--danger)">*</span></label><div class="input-wrap"><span class="icon"><i class="bi bi-lock-fill"></i></span><input type="password" id="reg-confirm" placeholder="Nhập lại"></div></div>
+        <div class="form-group" style="grid-column:1/-1"><label class="form-label">Email <span style="color:var(--danger)">*</span></label><div class="input-wrap"><span class="icon"><i class="bi bi-envelope"></i></span><input type="email" id="reg-email" placeholder="example@email.com"></div></div>
+        <div class="form-group"><label class="form-label">Số điện thoại</label><div class="input-wrap"><span class="icon"><i class="bi bi-phone"></i></span><input type="text" id="reg-phone" placeholder="0901234567"></div></div>
+        <div class="form-group"><label class="form-label">Avatar URL</label><div class="input-wrap"><span class="icon"><i class="bi bi-image"></i></span><input type="text" id="reg-avatar" placeholder="https://..."></div></div>
+      </div>
+      <button class="btn-auth-primary" onclick="doRegister()"><i class="bi bi-person-plus" style="margin-right:7px"></i>Tạo tài khoản</button>
+      <p style="text-align:center;font-size:.8rem;color:var(--text-muted);margin-top:.8rem">Đã có tài khoản? <a href="#" onclick="switchAuthTab('login');return false;" style="color:var(--accent);font-weight:600">Đăng nhập</a></p>
+    </div>
+  </div>
+</div>
+
+<!-- APP -->
+<div class="app-wrapper" id="app" style="display:none">
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="sidebar-brand-icon"><i class="bi bi-mortarboard-fill"></i></div>
+      <div><div class="sidebar-brand-text">Đào Tạo</div><div class="sidebar-brand-sub">Management System</div></div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section">
+        <div class="nav-section-label">Tổng quan</div>
+        <a href="#" class="nav-item" onclick="showTab('dashboard');setNavActive(this);return false;"><i class="bi bi-grid-1x2"></i> Dashboard</a>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-label">Cấu trúc đào tạo</div>
+        <a href="#" class="nav-item active" id="nav-academic-years" onclick="showTab('academic-years');setNavActive(this);return false;"><i class="bi bi-calendar3"></i> Niên khóa</a>
+        <a href="#" class="nav-item" id="nav-school-years" onclick="showTab('school-years');setNavActive(this);return false;"><i class="bi bi-calendar-range"></i> Khóa học</a>
+        <a href="#" class="nav-item" id="nav-semesters" onclick="showTab('semesters');setNavActive(this);return false;"><i class="bi bi-calendar2-week"></i> Học kỳ</a>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-label">Quản lý lớp học</div>
+        <a href="#" class="nav-item" id="nav-course-sections" onclick="showTab('course-sections');setNavActive(this);return false;"><i class="bi bi-book"></i> Lớp học phần</a>
+        <a href="#" class="nav-item" id="nav-student-course-sections" onclick="showTab('student-course-sections');setNavActive(this);return false;"><i class="bi bi-person-badge"></i> Sinh viên lớp</a>
+        <a href="#" class="nav-item" id="nav-lecturer-course-classes" onclick="showTab('lecturer-course-classes');setNavActive(this);return false;"><i class="bi bi-person-workspace"></i> Giảng viên lớp</a>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-label">Hệ thống</div>
+        <a href="#" class="nav-item" id="nav-users" onclick="showTab('users');setNavActive(this);return false;"><i class="bi bi-people"></i> Người dùng</a>
+      </div>
+    </nav>
+  </aside>
+
+  <div class="main-area">
+    <header class="app-header">
+      <button class="header-btn" id="sidebar-toggle"><i class="bi bi-list"></i></button>
+      <div style="flex:1">
+        <div class="header-title" id="page-title">Niên khóa</div>
+        <div class="header-subtitle">Quản lý Đào tạo Đại học</div>
+      </div>
+      <button class="header-btn"><i class="bi bi-bell"></i></button>
+      <div class="dropdown">
+        <div class="user-chip" onclick="toggleDropdown()">
+          <div class="user-avatar"><i class="bi bi-person-fill"></i></div>
+          <div><div class="user-name" id="header-username">Tài khoản</div><div class="user-role" id="header-userrole">—</div></div>
+          <i class="bi bi-chevron-down" style="font-size:12px;color:var(--text-muted);margin-left:4px"></i>
+        </div>
+        <div class="dropdown-menu" id="user-dropdown">
+          <div class="dropdown-header"><div class="dropdown-header-name" id="dd-username">—</div><div class="dropdown-header-role" id="dd-role">—</div></div>
+          <div class="dropdown-divider"></div>
+          <button class="dropdown-item" onclick="showTab('users');setNavActiveById('nav-users');toggleDropdown()"><i class="bi bi-people"></i> Quản lý Users</button>
+          <div class="dropdown-divider"></div>
+          <button class="dropdown-item danger" onclick="doLogout()"><i class="bi bi-box-arrow-right"></i> Đăng xuất</button>
+        </div>
+      </div>
+    </header>
+
+    <div class="app-content">
+      <div id="toast-container"></div>
+
+      <!-- TAB BAR -->
+      <div class="tab-bar" id="mainTabs">
+        <button class="tab-btn" data-tab="dashboard" onclick="showTab('dashboard')"><i class="bi bi-grid-1x2"></i><span>Dashboard</span></button>
+        <button class="tab-btn active" data-tab="academic-years" onclick="showTab('academic-years')"><i class="bi bi-calendar3"></i><span>Niên khóa</span></button>
+        <button class="tab-btn" data-tab="school-years" onclick="showTab('school-years')"><i class="bi bi-calendar-range"></i><span>Khóa học</span></button>
+        <button class="tab-btn" data-tab="semesters" onclick="showTab('semesters')"><i class="bi bi-calendar2-week"></i><span>Học kỳ</span></button>
+        <button class="tab-btn" data-tab="course-sections" onclick="showTab('course-sections')"><i class="bi bi-book"></i><span>Lớp HP</span></button>
+        <button class="tab-btn" data-tab="student-course-sections" onclick="showTab('student-course-sections')"><i class="bi bi-person-badge"></i><span>SV Lớp</span></button>
+        <button class="tab-btn" data-tab="lecturer-course-classes" onclick="showTab('lecturer-course-classes')"><i class="bi bi-person-workspace"></i><span>GV Lớp</span></button>
+        <button class="tab-btn" data-tab="users" onclick="showTab('users')"><i class="bi bi-people"></i><span>Users</span></button>
+      </div>
+
+      <!-- ══ 0. DASHBOARD ══ -->
+      <div id="tab-dashboard" class="tab-content">
+        <div class="stats-row" id="dashboard-stats">
+          <div class="stat-card"><div class="stat-card-icon" style="color:var(--accent)"><i class="bi bi-calendar3"></i></div><div class="stat-card-n" id="stat-ay">—</div><div class="stat-card-l">Niên khóa</div></div>
+          <div class="stat-card"><div class="stat-card-icon" style="color:var(--purple)"><i class="bi bi-calendar-range"></i></div><div class="stat-card-n" id="stat-sy">—</div><div class="stat-card-l">Khóa học</div></div>
+          <div class="stat-card"><div class="stat-card-icon" style="color:var(--warning)"><i class="bi bi-calendar2-week"></i></div><div class="stat-card-n" id="stat-sm">—</div><div class="stat-card-l">Học kỳ</div></div>
+          <div class="stat-card"><div class="stat-card-icon" style="color:var(--info)"><i class="bi bi-book"></i></div><div class="stat-card-n" id="stat-cs">—</div><div class="stat-card-l">Lớp học phần</div></div>
+          <div class="stat-card"><div class="stat-card-icon" style="color:var(--success)"><i class="bi bi-people"></i></div><div class="stat-card-n" id="stat-usr">—</div><div class="stat-card-l">Người dùng</div></div>
+        </div>
+        <div id="dashboard-tree" style="font-size:.85rem;color:var(--text-muted);text-align:center;padding:2rem">
+          <div class="spinner"></div>
+        </div>
+      </div>
+
+      <!-- ══ 1. ACADEMIC YEARS ══ -->
+      <div id="tab-academic-years" class="tab-content active">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-header-left">
+              <div class="card-header-icon"><i class="bi bi-calendar3"></i></div>
+              <div><div class="card-title">Danh sách Niên khóa</div><div class="card-subtitle">K23 = 2023-2027 · K24 = 2024-2029</div></div>
+            </div>
+            <div style="display:flex;gap:8px">
+              <button class="btn btn-outline btn-sm" onclick="openModal('academic-years-seed')" title="Tạo dữ liệu mẫu K23 & K24"><i class="bi bi-magic"></i> Seed mẫu</button>
+              <button class="btn btn-primary btn-sm" onclick="openModal('academic-years')"><i class="bi bi-plus-lg"></i> Thêm mới</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="toolbar">
+              <div class="search-box" style="flex:1;max-width:280px"><i class="bi bi-search"></i><input type="text" id="search-academic-years" placeholder="Tìm theo tên niên khóa..." oninput="searchLive('academic-years',this.value)"></div>
+              <button class="btn btn-success-outline btn-sm" onclick="filterActive('academic-years')"><i class="bi bi-check-circle"></i> Active</button>
+              <button class="btn btn-outline btn-sm" onclick="loadData('academic-years')"><i class="bi bi-arrow-clockwise"></i></button>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Code</th><th>Tên niên khóa</th><th>Năm</th><th>Bắt đầu</th><th>Kết thúc</th><th>Khóa học</th><th>Trạng thái</th><th>Thao tác</th></tr></thead>
+                <tbody id="tbody-academic-years"><tr><td colspan="8"><div class="loading-state"><div class="spinner"></div></div></td></tr></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ 2. SCHOOL YEARS ══ -->
+      <div id="tab-school-years" class="tab-content">
+        <div id="sy-content"><div class="loading-state"><div class="spinner"></div></div></div>
+      </div>
+
+      <!-- ══ 3. SEMESTERS ══ -->
+      <div id="tab-semesters" class="tab-content">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-header-left">
+              <div class="card-header-icon" style="background:var(--warning-bg)"><i class="bi bi-calendar2-week" style="color:var(--warning)"></i></div>
+              <div><div class="card-title">Danh sách Học kỳ</div><div class="card-subtitle">Semesters — liên kết với Khóa học</div></div>
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="openModal('semesters')"><i class="bi bi-plus-lg"></i> Thêm mới</button>
+          </div>
+          <div class="card-body">
+            <div class="toolbar">
+              <div class="search-box" style="flex:1;max-width:240px"><i class="bi bi-search"></i><input type="text" id="search-semesters" placeholder="Tìm học kỳ..." oninput="searchLive('semesters',this.value)"></div>
+              <select class="filter-select" id="filter-sm-ay" onchange="filterSemByAY(this.value)">
+                <option value="">Lọc theo niên khóa</option>
+              </select>
+              <button class="btn btn-success-outline btn-sm" onclick="filterActive('semesters')"><i class="bi bi-check-circle"></i> Active</button>
+              <button class="btn btn-outline btn-sm" onclick="loadData('semesters')"><i class="bi bi-arrow-clockwise"></i></button>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Code</th><th>Tên học kỳ</th><th>Khóa học</th><th>Niên khóa</th><th>Bắt đầu</th><th>Kết thúc</th><th>Lớp HP</th><th>Trạng thái</th><th>Thao tác</th></tr></thead>
+                <tbody id="tbody-semesters"><tr><td colspan="9"><div class="loading-state"><div class="spinner"></div></div></td></tr></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ 4. COURSE SECTIONS ══ -->
+      <div id="tab-course-sections" class="tab-content">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-header-left">
+              <div class="card-header-icon" style="background:var(--info-bg)"><i class="bi bi-book" style="color:var(--info)"></i></div>
+              <div><div class="card-title">Lớp học phần</div><div class="card-subtitle">Course Sections — thuộc về Học kỳ</div></div>
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="openModal('course-sections')"><i class="bi bi-plus-lg"></i> Thêm mới</button>
+          </div>
+          <div class="card-body">
+            <div id="cs-breadcrumb" class="breadcrumb" style="display:none">
+              <a onclick="clearCSFilter()">Tất cả lớp HP</a>
+              <span class="sep">/</span>
+              <span id="cs-breadcrumb-text"></span>
+            </div>
+            <div class="toolbar">
+              <div class="search-box" style="flex:1;max-width:240px"><i class="bi bi-search"></i><input type="text" id="search-course-sections" placeholder="Tìm lớp học phần..." oninput="searchLive('course-sections',this.value)"></div>
+              <select class="filter-select" id="filter-cs-sm" onchange="filterCSBySemester(this.value)">
+                <option value="">Lọc theo học kỳ</option>
+              </select>
+              <select class="filter-select" id="filter-cs-status" onchange="filterByStatus('course-sections',this.value)">
+                <option value="">Tất cả trạng thái</option>
+                <option value="open">Open</option><option value="closed">Closed</option><option value="cancelled">Cancelled</option>
+              </select>
+              <button class="btn btn-outline btn-sm" onclick="loadData('course-sections')"><i class="bi bi-arrow-clockwise"></i></button>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Code</th><th>Học kỳ</th><th>Loại</th><th>Sĩ số</th><th>SV đã ĐK</th><th>GV phụ trách</th><th>Trạng thái</th><th>Thao tác</th></tr></thead>
+                <tbody id="tbody-course-sections"><tr><td colspan="9"><div class="loading-state"><div class="spinner"></div></div></td></tr></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ 5. STUDENT COURSE SECTIONS ══ -->
+      <div id="tab-student-course-sections" class="tab-content">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-header-left">
+              <div class="card-header-icon" style="background:#f0fdf4"><i class="bi bi-person-badge" style="color:var(--success)"></i></div>
+              <div><div class="card-title">Sinh viên trong lớp học phần</div><div class="card-subtitle">Student Course Sections</div></div>
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="openModal('student-course-sections')"><i class="bi bi-plus-lg"></i> Thêm mới</button>
+          </div>
+          <div class="card-body">
+            <div id="scs-breadcrumb" class="breadcrumb" style="display:none">
+              <a onclick="clearSCSFilter()">Tất cả đăng ký</a>
+              <span class="sep">/</span>
+              <span id="scs-breadcrumb-text"></span>
+            </div>
+            <div class="toolbar">
+              <div class="search-box" style="flex:1;max-width:220px"><i class="bi bi-search"></i><input type="text" id="search-scs" placeholder="Tìm sinh viên..." oninput="searchLive('student-course-sections',this.value)"></div>
+              <select class="filter-select" id="filter-scs-cs" onchange="filterSCSByCS(this.value)">
+                <option value="">Lọc theo lớp HP</option>
+              </select>
+              <select class="filter-select" id="filter-scs-status" onchange="filterByStatus('student-course-sections',this.value)">
+                <option value="">Tất cả trạng thái</option>
+                <option value="studying">Đang học</option><option value="completed">Hoàn thành</option><option value="dropped">Đã bỏ</option>
+              </select>
+              <button class="btn btn-outline btn-sm" onclick="loadData('student-course-sections')"><i class="bi bi-arrow-clockwise"></i></button>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Sinh viên</th><th>Lớp học phần</th><th>Học kỳ</th><th>Trạng thái</th><th>Ngày đăng ký</th><th>Ghi chú</th><th>Active</th><th>Thao tác</th></tr></thead>
+                <tbody id="tbody-student-course-sections"><tr><td colspan="8"><div class="loading-state"><div class="spinner"></div></div></td></tr></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ 6. LECTURER COURSE CLASSES ══ -->
+      <div id="tab-lecturer-course-classes" class="tab-content">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-header-left">
+              <div class="card-header-icon" style="background:#f1f5f9"><i class="bi bi-person-workspace" style="color:#334155"></i></div>
+              <div><div class="card-title">Giảng viên dạy lớp</div><div class="card-subtitle">Lecturer Course Classes — phân công GV</div></div>
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="openModal('lecturer-course-classes')"><i class="bi bi-plus-lg"></i> Thêm mới</button>
+          </div>
+          <div class="card-body">
+            <div class="toolbar">
+              <div class="search-box" style="flex:1;max-width:220px"><i class="bi bi-search"></i><input type="text" id="search-lcc" placeholder="Tìm giảng viên..." oninput="searchLive('lecturer-course-classes',this.value)"></div>
+              <select class="filter-select" id="filter-lcc-cs" onchange="filterLCCByCS(this.value)">
+                <option value="">Lọc theo lớp HP</option>
+              </select>
+              <select class="filter-select" id="filter-lcc-role" onchange="filterByRole(this.value)">
+                <option value="">Tất cả vai trò</option>
+                <option value="Giảng viên chính">Giảng viên chính</option>
+                <option value="Giảng viên phụ">Giảng viên phụ</option>
+              </select>
+              <button class="btn btn-success-outline btn-sm" onclick="filterActive('lecturer-course-classes')"><i class="bi bi-check-circle"></i> Active</button>
+              <button class="btn btn-outline btn-sm" onclick="loadData('lecturer-course-classes')"><i class="bi bi-arrow-clockwise"></i></button>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Giảng viên</th><th>Lớp học phần</th><th>Học kỳ</th><th>Vai trò</th><th>Active</th><th>Ngày phân công</th><th>Thao tác</th></tr></thead>
+                <tbody id="tbody-lecturer-course-classes"><tr><td colspan="7"><div class="loading-state"><div class="spinner"></div></div></td></tr></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ 7. USERS ══ -->
+      <div id="tab-users" class="tab-content">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-header-left">
+              <div class="card-header-icon"><i class="bi bi-people"></i></div>
+              <div><div class="card-title">Danh sách Người dùng</div><div class="card-subtitle">Users Management</div></div>
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="openModal('users')"><i class="bi bi-plus-lg"></i> Thêm mới</button>
+          </div>
+          <div class="card-body">
+            <div class="toolbar">
+              <div class="search-box" style="flex:1;max-width:320px"><i class="bi bi-search"></i><input type="text" id="search-users" placeholder="Tìm theo username, email..." oninput="searchLive('users',this.value)"></div>
+              <button class="btn btn-outline btn-sm" onclick="loadData('users')"><i class="bi bi-arrow-clockwise"></i></button>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Username</th><th>Email</th><th>Phone</th><th>Roles</th><th>Active</th><th>Ngày tạo</th><th>Thao tác</th></tr></thead>
+                <tbody id="tbody-users"><tr><td colspan="7"><div class="loading-state"><div class="spinner"></div></div></td></tr></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- DETAIL PANEL -->
+<div class="detail-panel" id="detail-panel">
+  <div class="detail-panel-head">
+    <div style="display:flex;align-items:center;gap:8px">
+      <i class="bi bi-info-circle" style="color:var(--accent)"></i>
+      <span style="font-weight:700;font-size:.9rem" id="dp-title">Chi tiết</span>
+    </div>
+    <button class="modal-close" onclick="closeDetailPanel()"><i class="bi bi-x-lg"></i></button>
+  </div>
+  <div class="detail-panel-body" id="dp-body"></div>
+</div>
+
+<!-- ══════════════ MODALS ══════════════ -->
+
+<!-- Academic Year Modal -->
+<div class="modal-overlay hidden" id="modal-academic-years">
+  <div class="modal-box">
+    <div class="modal-head">
+      <div class="modal-head-left"><div class="modal-head-badge" style="background:var(--accent-soft)"><i class="bi bi-calendar3" style="color:var(--accent)"></i></div><span class="modal-title" id="modal-academic-years-title">Thêm Niên khóa</span></div>
+      <button class="modal-close" onclick="closeModal('academic-years')"><i class="bi bi-x-lg"></i></button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="ay-id">
+      <div class="warn-box" style="margin-bottom:12px">
+        <i class="bi bi-lightbulb-fill" style="flex-shrink:0"></i>
+        <span>Sau khi lưu, tab <b>Khóa học</b> sẽ tự sinh các năm học từ ngày bắt đầu/kết thúc. Ví dụ: K23 (2023→2027) → 4 năm học.</span>
+      </div>
+      <div class="field-group" style="grid-template-columns:1fr 1fr">
+        <div class="field"><label>Code <span class="req">*</span></label><input type="text" id="ay-code" placeholder="K23, K24..."></div>
+        <div class="field"><label>Năm</label><input type="text" id="ay-year" placeholder="2023-2027"></div>
+        <div class="field" style="grid-column:1/-1"><label>Tên niên khóa</label><input type="text" id="ay-name" placeholder="Niên khóa 2023-2027"></div>
+        <div class="field" style="grid-column:1/-1"><label>Mô tả</label><textarea id="ay-description" placeholder="Mô tả ngắn..."></textarea></div>
+        <div class="field"><label>Ngày bắt đầu <span class="req">*</span></label><input type="date" id="ay-start"></div>
+        <div class="field"><label>Ngày kết thúc <span class="req">*</span></label><input type="date" id="ay-end"></div>
+        <div class="field" style="grid-column:1/-1"><div class="toggle-row"><span class="toggle-label">Đang hoạt động</span><label class="toggle-switch"><input type="checkbox" id="ay-active" checked><span class="toggle-slider"></span></label></div></div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-modal-cancel" onclick="closeModal('academic-years')">Hủy</button>
+      <button class="btn btn-primary" onclick="saveData('academic-years')"><i class="bi bi-check-lg"></i> Lưu</button>
+    </div>
+  </div>
+</div>
+
+<!-- Seed Modal (tạo K23 + K24 nhanh) -->
+<div class="modal-overlay hidden" id="modal-academic-years-seed">
+  <div class="modal-box">
+    <div class="modal-head">
+      <div class="modal-head-left"><div class="modal-head-badge" style="background:#fef3c7"><i class="bi bi-magic" style="color:#d97706"></i></div><span class="modal-title">Tạo dữ liệu mẫu K23 & K24</span></div>
+      <button class="modal-close" onclick="closeModal('academic-years-seed')"><i class="bi bi-x-lg"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="info-box" style="margin-bottom:12px">
+        <i class="bi bi-info-circle-fill" style="flex-shrink:0"></i>
+        <div>Thao tác này sẽ tạo 2 niên khóa mẫu:<br>
+        <b>K23</b>: 2023-09-01 → 2027-06-30 (4 năm học)<br>
+        <b>K24</b>: 2024-09-01 → 2029-06-30 (5 năm học)<br>
+        Nếu đã có sẽ bỏ qua.
+        </div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-modal-cancel" onclick="closeModal('academic-years-seed')">Hủy</button>
+      <button class="btn btn-primary" onclick="seedAcademicYears()"><i class="bi bi-magic"></i> Tạo ngay</button>
+    </div>
+  </div>
+</div>
+
+<!-- Semester Modal -->
+<div class="modal-overlay hidden" id="modal-semesters">
+  <div class="modal-box modal-lg">
+    <div class="modal-head">
+      <div class="modal-head-left"><div class="modal-head-badge" style="background:var(--warning-bg)"><i class="bi bi-calendar2-week" style="color:var(--warning)"></i></div><span class="modal-title" id="modal-semesters-title">Thêm Học kỳ</span></div>
+      <button class="modal-close" onclick="closeModal('semesters')"><i class="bi bi-x-lg"></i></button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="sm-id">
+      <div class="field-group" style="grid-template-columns:1fr 1fr">
+        <div class="field"><label>Code <span class="req">*</span></label><input type="text" id="sm-code" placeholder="HK1-2024-2025"></div>
+        <div class="field"><label>Tên học kỳ</label><input type="text" id="sm-name" placeholder="Học kỳ 1 2024-2025"></div>
+        <div class="field" style="grid-column:1/-1">
+          <label>Khóa học (School Year) <span class="req">*</span></label>
+          <select id="sm-school-year-select" onchange="onSelectSchoolYear(this.value)">
+            <option value="">— Chọn khóa học —</option>
+          </select>
+          <div class="field-hint">Chọn năm học để tự điền thông tin</div>
+        </div>
+        <div class="field" style="grid-column:1/-1"><label>School Year ID (tự điền)</label><input type="text" id="sm-school-year-id" placeholder="UUID (từ Khóa học)" readonly style="background:var(--surface-3)"></div>
+        <div class="field"><label>Ngày bắt đầu</label><input type="date" id="sm-start"></div>
+        <div class="field"><label>Ngày kết thúc</label><input type="date" id="sm-end"></div>
+        <div class="field" style="grid-column:1/-1"><div class="toggle-row"><span class="toggle-label">Đang hoạt động</span><label class="toggle-switch"><input type="checkbox" id="sm-active" checked><span class="toggle-slider"></span></label></div></div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-modal-cancel" onclick="closeModal('semesters')">Hủy</button>
+      <button class="btn btn-primary" onclick="saveData('semesters')"><i class="bi bi-check-lg"></i> Lưu</button>
+    </div>
+  </div>
+</div>
+
+<!-- Course Section Modal -->
+<div class="modal-overlay hidden" id="modal-course-sections">
+  <div class="modal-box modal-lg">
+    <div class="modal-head">
+      <div class="modal-head-left"><div class="modal-head-badge" style="background:var(--info-bg)"><i class="bi bi-book" style="color:var(--info)"></i></div><span class="modal-title" id="modal-course-sections-title">Thêm Lớp học phần</span></div>
+      <button class="modal-close" onclick="closeModal('course-sections')"><i class="bi bi-x-lg"></i></button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="cs-id">
+      <div class="field-group" style="grid-template-columns:1fr 1fr 1fr">
+        <div class="field" style="grid-column:1/-1"><label>Code <span class="req">*</span></label><input type="text" id="cs-code" placeholder="CS001-HK1-2425"></div>
+        <div class="field" style="grid-column:1/-1">
+          <label>Học kỳ <span class="req">*</span></label>
+          <select id="cs-semester-select" onchange="onSelectSemesterForCS(this.value)">
+            <option value="">— Chọn học kỳ —</option>
+          </select>
+        </div>
+        <div class="field" style="grid-column:1/-1"><label>Semester ID (tự điền)</label><input type="text" id="cs-semester-id" placeholder="UUID học kỳ" readonly style="background:var(--surface-3)"></div>
+        <div class="field"><label>Course ID (môn học)</label><input type="text" id="cs-course-id" placeholder="UUID môn học"></div>
+        <div class="field"><label>Room ID</label><input type="text" id="cs-room-id" placeholder="UUID phòng"></div>
+        <div class="field"><label>Building ID</label><input type="text" id="cs-building-id" placeholder="UUID tòa nhà"></div>
+        <div class="field"><label>Sĩ số tối thiểu</label><input type="number" id="cs-min-students" min="0" value="15"></div>
+        <div class="field"><label>Sĩ số tối đa</label><input type="number" id="cs-max-students" min="0" value="60"></div>
+        <div class="field"><label>Loại lớp</label><input type="text" id="cs-class-type" placeholder="Lý thuyết / Thực hành"></div>
+        <div class="field"><label>Trạng thái</label><select id="cs-status"><option value="open">Open</option><option value="closed">Closed</option><option value="cancelled">Cancelled</option></select></div>
+        <div class="field"><label>Bắt đầu đăng ký</label><input type="datetime-local" id="cs-reg-start"></div>
+        <div class="field"><label>Kết thúc đăng ký</label><input type="datetime-local" id="cs-reg-end"></div>
+        <div class="field" style="grid-column:1/-1"><label>Ghi chú</label><input type="text" id="cs-note"></div>
+        <div class="field" style="grid-column:1/-1"><div class="toggle-row"><span class="toggle-label">Đang hoạt động</span><label class="toggle-switch"><input type="checkbox" id="cs-active" checked><span class="toggle-slider"></span></label></div></div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-modal-cancel" onclick="closeModal('course-sections')">Hủy</button>
+      <button class="btn btn-primary" onclick="saveData('course-sections')"><i class="bi bi-check-lg"></i> Lưu</button>
+    </div>
+  </div>
+</div>
+
+<!-- Student Course Section Modal -->
+<div class="modal-overlay hidden" id="modal-student-course-sections">
+  <div class="modal-box">
+    <div class="modal-head">
+      <div class="modal-head-left"><div class="modal-head-badge" style="background:#f0fdf4"><i class="bi bi-person-badge" style="color:var(--success)"></i></div><span class="modal-title" id="modal-student-course-sections-title">Thêm Đăng ký học phần</span></div>
+      <button class="modal-close" onclick="closeModal('student-course-sections')"><i class="bi bi-x-lg"></i></button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="scs-id">
+      <div class="field-group" style="grid-template-columns:1fr 1fr">
+        <div class="field" style="grid-column:1/-1">
+          <label>Sinh viên <span class="req">*</span></label>
+          <select id="scs-student-select" onchange="document.getElementById('scs-student-id').value=this.value">
+            <option value="">— Chọn sinh viên —</option>
+          </select>
+        </div>
+        <div class="field" style="grid-column:1/-1"><label>Student ID</label><input type="text" id="scs-student-id" readonly style="background:var(--surface-3)"></div>
+        <div class="field" style="grid-column:1/-1">
+          <label>Lớp học phần <span class="req">*</span></label>
+          <select id="scs-cs-select" onchange="document.getElementById('scs-course-section-id').value=this.value">
+            <option value="">— Chọn lớp học phần —</option>
+          </select>
+        </div>
+        <div class="field" style="grid-column:1/-1"><label>Course Section ID</label><input type="text" id="scs-course-section-id" readonly style="background:var(--surface-3)"></div>
+        <div class="field"><label>Trạng thái</label><select id="scs-status"><option value="studying">Đang học</option><option value="completed">Hoàn thành</option><option value="dropped">Đã bỏ</option></select></div>
+        <div class="field"><label>Ngày đăng ký</label><input type="datetime-local" id="scs-registered-at"></div>
+        <div class="field" style="grid-column:1/-1"><label>Ghi chú</label><input type="text" id="scs-note"></div>
+        <div class="field" style="grid-column:1/-1"><div class="toggle-row"><span class="toggle-label">Đang hoạt động</span><label class="toggle-switch"><input type="checkbox" id="scs-active" checked><span class="toggle-slider"></span></label></div></div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-modal-cancel" onclick="closeModal('student-course-sections')">Hủy</button>
+      <button class="btn btn-primary" onclick="saveData('student-course-sections')"><i class="bi bi-check-lg"></i> Lưu</button>
+    </div>
+  </div>
+</div>
+
+<!-- Lecturer Course Class Modal -->
+<div class="modal-overlay hidden" id="modal-lecturer-course-classes">
+  <div class="modal-box">
+    <div class="modal-head">
+      <div class="modal-head-left"><div class="modal-head-badge" style="background:#f1f5f9"><i class="bi bi-person-workspace" style="color:#334155"></i></div><span class="modal-title" id="modal-lecturer-course-classes-title">Thêm GV dạy lớp</span></div>
+      <button class="modal-close" onclick="closeModal('lecturer-course-classes')"><i class="bi bi-x-lg"></i></button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="lcc-id">
+      <div class="field-group" style="grid-template-columns:1fr">
+        <div class="field">
+          <label>Giảng viên <span class="req">*</span></label>
+          <select id="lcc-employee-select" onchange="document.getElementById('lcc-employee-id').value=this.value">
+            <option value="">— Chọn giảng viên —</option>
+          </select>
+        </div>
+        <div class="field"><label>Employee ID</label><input type="text" id="lcc-employee-id" readonly style="background:var(--surface-3)"></div>
+        <div class="field">
+          <label>Lớp học phần <span class="req">*</span></label>
+          <select id="lcc-cs-select" onchange="document.getElementById('lcc-course-class-id').value=this.value">
+            <option value="">— Chọn lớp học phần —</option>
+          </select>
+        </div>
+        <div class="field"><label>Course Class ID</label><input type="text" id="lcc-course-class-id" readonly style="background:var(--surface-3)"></div>
+        <div class="field"><label>Vai trò</label><select id="lcc-role"><option value="Giảng viên chính">Giảng viên chính</option><option value="Giảng viên phụ">Giảng viên phụ</option></select></div>
+        <div class="field"><div class="toggle-row"><span class="toggle-label">Đang hoạt động</span><label class="toggle-switch"><input type="checkbox" id="lcc-active" checked><span class="toggle-slider"></span></label></div></div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-modal-cancel" onclick="closeModal('lecturer-course-classes')">Hủy</button>
+      <button class="btn btn-primary" onclick="saveData('lecturer-course-classes')"><i class="bi bi-check-lg"></i> Lưu</button>
+    </div>
+  </div>
+</div>
+
+<!-- Users Modal -->
+<div class="modal-overlay hidden" id="modal-users">
+  <div class="modal-box">
+    <div class="modal-head">
+      <div class="modal-head-left"><div class="modal-head-badge" style="background:var(--accent-soft)"><i class="bi bi-person-circle" style="color:var(--accent)"></i></div><span class="modal-title" id="modal-users-title">Thêm Người dùng</span></div>
+      <button class="modal-close" onclick="closeModal('users')"><i class="bi bi-x-lg"></i></button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="usr-id">
+      <div class="field-group" style="grid-template-columns:1fr 1fr">
+        <div class="field" style="grid-column:1/-1"><label>Tên đăng nhập <span class="req">*</span></label><input type="text" id="usr-username" placeholder="username"></div>
+        <div class="field" style="grid-column:1/-1"><label>Mật khẩu</label><input type="password" id="usr-password" placeholder="Để trống nếu không đổi"></div>
+        <div class="field" style="grid-column:1/-1"><label>Email</label><input type="email" id="usr-email"></div>
+        <div class="field"><label>Số điện thoại</label><input type="text" id="usr-phone"></div>
+        <div class="field"><label>Avatar URL</label><input type="text" id="usr-avatar"></div>
+        <div class="field" style="grid-column:1/-1"><div class="toggle-row"><span class="toggle-label">Đang hoạt động</span><label class="toggle-switch"><input type="checkbox" id="usr-active" checked><span class="toggle-slider"></span></label></div></div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-modal-cancel" onclick="closeModal('users')">Hủy</button>
+      <button class="btn btn-primary" onclick="saveUser()"><i class="bi bi-check-lg"></i> Lưu</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const BASE = 'http://localhost:8080/api';
+let currentUser = null;
+
+/* ══════════════════════════════════════════
+   IN-MEMORY CACHE — keeps all loaded data
+══════════════════════════════════════════ */
+const CACHE = {
+  'academic-years': [],
+  'school-years': [],   // real SchoolYear records from server
+  'semesters': [],
+  'course-sections': [],
+  'student-course-sections': [],
+  'lecturer-course-classes': [],
+  'users': [],
+  // generated school years: { ayId -> [SchoolYear] } (for tab display)
+  schoolYears: {}
+};
+
+/* ══════════════════════════════════════════
+   SCHOOL YEAR GENERATION ENGINE
+   K23: 2023-09-01→2027-06-30 → [2023-24, 2024-25, 2025-26, 2026-27]
+   K24: 2024-09-01→2029-06-30 → [2024-25, ..., 2028-29]
+══════════════════════════════════════════ */
+function generateSchoolYears(ay) {
+  const sd = new Date(ay.startDate || ay.start_date);
+  const ed = new Date(ay.endDate   || ay.end_date);
+  if (isNaN(sd) || isNaN(ed)) return [];
+  const startYear = sd.getFullYear();
+  const endYear   = ed.getMonth() >= 5 ? ed.getFullYear() : ed.getFullYear() - 1;
+  const years = [];
+  for (let y = startYear; y < endYear; y++) {
+    // Unique virtual ID per year (includes year range so each is distinct)
+    const id = `${ay.id}`;
+    years.push({
+      id, _virtual: true, _ayId: ay.id, _ayCode: ay.code,
+      name:        `${y}-${y+1}`,
+      displayName: `Năm học ${y}–${y+1}`,
+      startDate:   `${y}-09-01`,
+      endDate:     `${y+1}-06-30`,
+      semesters: [
+        { id:`${id}-hk1`, hk:1, name:`Học kỳ 1`, fullName:`HK1 ${y}-${y+1}`,
+          startDate:`${y}-09-01`, endDate:`${y+1}-01-15` },
+        { id:`${id}-hk2`, hk:2, name:`Học kỳ 2`, fullName:`HK2 ${y}-${y+1}`,
+          startDate:`${y+1}-01-20`, endDate:`${y+1}-06-30` },
+      ]
+    });
+  }
+  return years;
+}
+
+function getAllSchoolYears() {
+  const all = [];
+  (CACHE['academic-years'] || []).forEach(ay => {
+    const sys = generateSchoolYears(ay);
+    CACHE.schoolYears[ay.id] = sys;
+    sys.forEach(sy => { sy._ayCode = ay.code; all.push(sy); });
+  });
+  return all;
+}
+
+// Which AY codes own a given school year name?
+function getAYCodesForSY(syName) {
+  const codes = [];
+  // Check real server school-years
+  (CACHE['school-years'] || []).forEach(sy => {
+    const name = sy.name || sy.year || '';
+    if (name === syName || name.includes(syName)) {
+      const ayId = sy.academicYearId || sy.academic_year_id;
+      const ay = (CACHE['academic-years'] || []).find(a => a.id === ayId);
+      if (ay && !codes.includes(ay.code)) codes.push(ay.code);
+    }
+  });
+  // Also check virtual generated years
+  (CACHE['academic-years'] || []).forEach(ay => {
+    const sys = generateSchoolYears(ay);
+    if (sys.some(sy => sy.name === syName) && !codes.includes(ay.code)) codes.push(ay.code);
+  });
+  return codes;
+}
+
+/* Badge for shared school year */
+function syOwnerBadges(syName) {
+  const codes = getAYCodesForSY(syName);
+  if (codes.length === 0) return '';
+  if (codes.length >= 2) return `<span class="badge badge-shared">${codes.join(' + ')}</span>`;
+  const c = codes[0];
+  return c === 'K23'
+    ? `<span class="badge badge-k23">K23</span>`
+    : `<span class="badge badge-k24">K24</span>`;
+}
+
+/* ══════════════════════════════════════════
+   LOOKUP HELPERS
+══════════════════════════════════════════ */
+function findCSById(id) { return (CACHE['course-sections'] || []).find(r => r.id === id); }
+function findSMById(id) { return (CACHE['semesters'] || []).find(r => r.id === id); }
+function findUserById(id) { return (CACHE['users'] || []).find(r => r.id === id); }
+function findSYById(id) {
+  if (!id) return null;
+  // 1. Look in real server school-years first
+  const real = (CACHE['school-years'] || []).find(sy => sy.id === id);
+  if (real) {
+    // Normalize to the shape the rest of the code expects
+    return _normalizeSY(real);
+  }
+  // 2. Look in virtual generated school years
+  for (const ay of (CACHE['academic-years'] || [])) {
+    const sys = generateSchoolYears(ay);
+    const found = sys.find(sy => sy.id === id);
+    if (found) return found;
+  }
+  return null;
+}
+
+/* Normalize a real server SchoolYear to the virtual shape */
+function _normalizeSY(sy) {
+  if (!sy || sy._virtual) return sy;
+  // Server may store the year range in different fields; pick the best one
+  let name = sy.name || sy.year || sy.schoolYear || sy.yearRange || '';
+  // If name looks like "Năm học 2023-2024" extract just "2023-2024"
+  const match = name.match(/(\d{4})[–\-](\d{4})/);
+  const yearRange = match ? `${match[1]}-${match[2]}` : name;
+  const displayName = name.startsWith('Năm học') ? name : `Năm học ${yearRange}`;
+  return {
+    id: sy.id,
+    _real: true,
+    _ayId: sy.academicYearId || sy.academic_year_id || null,
+    name: yearRange,
+    displayName,
+    startDate: sy.startDate || sy.start_date || '',
+    endDate:   sy.endDate   || sy.end_date   || '',
+    semesters: []
+  };
+}
+
+/* Find which school year a semester belongs to */
+function findSYBySemester(sm) {
+  if (!sm) return null;
+  const syId = sm.schoolYearId || sm.school_year_id;
+  // 1. Look up by UUID in real server cache
+  if (syId) {
+    const real = (CACHE['school-years'] || []).find(sy => sy.id === syId);
+    if (real) return _normalizeSY(real);
+  }
+  // 2. Try virtual lookup by ID
+  if (syId) {
+    const virtual = findSYById(syId);
+    if (virtual) return virtual;
+  }
+  // 3. Infer from semester startDate
+  if (!sm.startDate) return null;
+  const smYear = new Date(sm.startDate).getFullYear();
+  const smMonth = new Date(sm.startDate).getMonth() + 1;
+  const syStartYear = smMonth >= 7 ? smYear : smYear - 1;
+  const syName = `${syStartYear}-${syStartYear+1}`;
+  // Check real cache by name
+  const realByName = (CACHE['school-years'] || []).find(sy => (sy.name||sy.year||'').includes(syName) || (sy.name||'') === syName);
+  if (realByName) return _normalizeSY(realByName);
+  // Check virtual
+  for (const ay of (CACHE['academic-years'] || [])) {
+    const sys = generateSchoolYears(ay);
+    const found = sys.find(sy => sy.name === syName);
+    if (found) return found;
+  }
+  return null;
+}
+
+function getSemesterLabel(sm) {
+  if (!sm) return '—';
+  const sy = findSYBySemester(sm);
+  return sy ? `${sy.name} · ${sm.name}` : sm.name || '—';
+}
+
+function getUserLabel(id) {
+  const u = findUserById(id);
+  return u ? u.username : (id ? id.substring(0,8)+'…' : '—');
+}
+
+function getCSLabel(id) {
+  const cs = findCSById(id);
+  return cs ? cs.code + (cs.name ? ' – '+cs.name.substring(0,20) : '') : (id ? id.substring(0,8)+'…' : '—');
+}
+
+function getSMLabel(id) {
+  const sm = findSMById(id);
+  return sm ? sm.name : (id ? id.substring(0,8)+'…' : '—');
+}
+
+/* Count enrollments per CS */
+function countSCSForCS(csId) {
+  return (CACHE['student-course-sections'] || []).filter(r => r.courseSectionId === csId || r.course_section_id === csId).length;
+}
+function countLCCForCS(csId) {
+  return (CACHE['lecturer-course-classes'] || []).filter(r => r.courseClassId === csId || r.course_class_id === csId).length;
+}
+function countCSForSM(smId) {
+  return (CACHE['course-sections'] || []).filter(r => r.semesterId === smId || r.semester_id === smId).length;
+}
+
+/* ══════════════════════════════════════════
+   AUTH
+══════════════════════════════════════════ */
+function switchAuthTab(tab) {
+  document.getElementById('form-login').classList.toggle('active', tab==='login');
+  document.getElementById('form-register').classList.toggle('active', tab==='register');
+  document.getElementById('tab-login-btn').classList.toggle('active', tab==='login');
+  document.getElementById('tab-register-btn').classList.toggle('active', tab==='register');
+}
+function togglePwd(id, btn) {
+  const inp = document.getElementById(id);
+  inp.type = inp.type==='text' ? 'password' : 'text';
+  btn.innerHTML = inp.type==='text' ? '<i class="bi bi-eye-slash"></i>' : '<i class="bi bi-eye"></i>';
+}
+function quickLogin(u, p) {
+  document.getElementById('login-username').value = u;
+  document.getElementById('login-password').value = p;
+  doLogin();
+}
+async function doLogin() {
+  const username = document.getElementById('login-username').value.trim();
+  const password = document.getElementById('login-password').value.trim();
+  const errEl = document.getElementById('login-error');
+  errEl.classList.remove('show');
+  if (!username || !password) { errEl.textContent='Vui lòng nhập đầy đủ thông tin.';errEl.classList.add('show');return; }
+  try {
+    const res = await fetch(`${BASE}/users`);
+    if (!res.ok) throw new Error(`API lỗi HTTP ${res.status} — hãy chắc server đang chạy tại localhost:8080`);
+    const users = await res.json();
+    const found = users.find(u => u.username===username && u.password===password && u.isActive!==false);
+    if (!found) { errEl.textContent='Sai tên đăng nhập hoặc mật khẩu.';errEl.classList.add('show');return; }
+    loginSuccess(found);
+  } catch(err) { errEl.textContent=err.message;errEl.classList.add('show'); }
+}
+function loginSuccess(user) {
+  currentUser = user;
+  if (document.getElementById('remember-me').checked)
+    sessionStorage.setItem('auth_user', JSON.stringify(user));
+  const uname = user.username || 'User';
+  const roles = (user.roles||[]).map(r=>r.name||r.roleName||'').filter(Boolean).join(', ') || 'USER';
+  document.getElementById('header-username').textContent = uname;
+  document.getElementById('header-userrole').textContent = roles;
+  document.getElementById('dd-username').textContent = uname;
+  document.getElementById('dd-role').textContent = roles;
+  document.getElementById('auth-overlay').classList.add('hidden');
+  document.getElementById('app').style.display = 'flex';
+  toast(`Chào mừng, ${uname}!`, 'success');
+  loadAllData();
+}
+async function doRegister() {
+  const fullname=document.getElementById('reg-fullname').value.trim();
+  const username=document.getElementById('reg-username').value.trim();
+  const password=document.getElementById('reg-password').value.trim();
+  const confirm=document.getElementById('reg-confirm').value.trim();
+  const email=document.getElementById('reg-email').value.trim();
+  const phone=document.getElementById('reg-phone').value.trim();
+  const avatar=document.getElementById('reg-avatar').value.trim();
+  const errEl=document.getElementById('register-error');
+  const okEl=document.getElementById('register-success');
+  errEl.classList.remove('show');okEl.classList.remove('show');
+  if(!fullname){errEl.textContent='Vui lòng nhập họ và tên.';errEl.classList.add('show');return;}
+  if(!username||username.length<4){errEl.textContent='Tên đăng nhập phải ít nhất 4 ký tự.';errEl.classList.add('show');return;}
+  if(!password||password.length<6){errEl.textContent='Mật khẩu phải ít nhất 6 ký tự.';errEl.classList.add('show');return;}
+  if(password!==confirm){errEl.textContent='Mật khẩu xác nhận không khớp.';errEl.classList.add('show');return;}
+  if(!email||!email.includes('@')){errEl.textContent='Email không hợp lệ.';errEl.classList.add('show');return;}
+  try {
+    const params=new URLSearchParams({username,password,fullName:fullname,email,phone,avatarUrl:avatar});
+    const res=await fetch(`${BASE}/users?${params}`,{method:'POST'});
+    if(!res.ok){let msg=`HTTP ${res.status}`;try{const j=await res.json();msg=j.message||j.error||msg;}catch(e){}throw new Error(msg);}
+    const nu=await res.json();
+    okEl.textContent=`✓ Tạo tài khoản "${nu.username}" thành công!`;okEl.classList.add('show');
+    setTimeout(()=>{document.getElementById('login-username').value=username;document.getElementById('login-password').value=password;switchAuthTab('login');},1500);
+  }catch(err){errEl.textContent='Đăng ký thất bại: '+err.message;errEl.classList.add('show');}
+}
+function doLogout() {
+  currentUser=null;sessionStorage.removeItem('auth_user');
+  document.getElementById('auth-overlay').classList.remove('hidden');
+  document.getElementById('app').style.display='none';
+  document.getElementById('user-dropdown').classList.remove('show');
+  document.getElementById('login-error').classList.remove('show');
+  toast('Đã đăng xuất.','success');
+}
+function tryAutoLogin() {
+  const saved=sessionStorage.getItem('auth_user');
+  if(saved){try{loginSuccess(JSON.parse(saved));return;}catch(e){}}
+}
+function toggleDropdown(){document.getElementById('user-dropdown').classList.toggle('show');}
+document.addEventListener('click',e=>{if(!e.target.closest('.dropdown'))document.getElementById('user-dropdown').classList.remove('show');});
+
+/* ══════════════════════════════════════════
+   LOAD ALL DATA
+══════════════════════════════════════════ */
+async function loadAllData() {
+  // Load academic-years and school-years first (semesters depend on them)
+  await Promise.all([
+    loadData('academic-years'),
+    loadSchoolYears(),
+  ]);
+  await Promise.all([
+    loadData('semesters'),
+    loadData('course-sections'),
+    loadData('student-course-sections'),
+    loadData('lecturer-course-classes'),
+    loadData('users'),
+  ]);
+  // after all loaded, refresh dropdowns and school years tab
+  refreshAllDropdowns();
+  renderSchoolYearsTab();
+  renderDashboard();
+  updateDashboardStats();
+}
+
+async function loadSchoolYears() {
+  try {
+    const res = await fetch(`${BASE}/school-years`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    CACHE['school-years'] = await res.json();
+  } catch(e) {
+    // Not fatal — fallback to date-inference
+    CACHE['school-years'] = [];
+  }
+}
+
+/* ══════════════════════════════════════════
+   MODULES — CRUD CONFIG
+══════════════════════════════════════════ */
+const MODULES = {
+  'academic-years': {
+    endpoint: '/academic-years', title: 'Niên khóa', prefix: 'ay',
+    getRow: (r) => {
+      const sys = generateSchoolYears(r);
+      return `<td><span class="mono strong">${r.code||''}</span></td>
+      <td>${r.name||''}</td>
+      <td>${r.year||''}</td>
+      <td class="mono">${r.startDate||'—'}</td>
+      <td class="mono">${r.endDate||'—'}</td>
+      <td><span style="font-size:.8rem;color:var(--text-secondary)">${sys.length} năm học · ${sys.length*2} HK</span></td>
+      <td>${badgeActive(r.isActive)}</td>
+      <td>
+        <button class="action-btn view" title="Xem khóa học" onclick="viewAYDetail('${r.id}')"><i class="bi bi-eye-fill"></i></button>
+        <button class="action-btn edit" title="Sửa" onclick='editRecord("academic-years",${JSON.stringify(r)})'><i class="bi bi-pencil-fill"></i></button>
+        <button class="action-btn del" title="Xóa" onclick="deleteRecord('academic-years','${r.id}')"><i class="bi bi-trash-fill"></i></button>
+      </td>`;
+    },
+    fillModal: (r) => { setVals({'ay-id':r.id,'ay-code':r.code,'ay-name':r.name,'ay-year':r.year,'ay-description':r.description,'ay-start':r.startDate,'ay-end':r.endDate}); document.getElementById('ay-active').checked=r.isActive!==false; },
+    getPayload: () => ({code:g('ay-code'),name:g('ay-name'),year:g('ay-year'),description:g('ay-description'),startDate:g('ay-start')||null,endDate:g('ay-end')||null,isActive:document.getElementById('ay-active').checked,updatedAt:now()}),
+    resetModal: () => { clearVals(['ay-id','ay-code','ay-name','ay-year','ay-description','ay-start','ay-end']); document.getElementById('ay-active').checked=true; }
+  },
+  'semesters': {
+    endpoint: '/semesters', title: 'Học kỳ', prefix: 'sm',
+    getRow: (r) => {
+      const sy = findSYBySemester(r);
+      const ayBadge = sy ? syOwnerBadges(sy.name) : '';
+      const csCnt = countCSForSM(r.id);
+      return `<td><span class="mono strong">${r.code||''}</span></td>
+      <td>${r.name||''}</td>
+      <td>${sy ? `<span style="font-size:.82rem">${sy.displayName}</span>` : `<span class="mono" style="font-size:.75rem">${(r.schoolYearId||'').substring(0,8)}…</span>`}</td>
+      <td>${ayBadge}</td>
+      <td class="mono">${r.startDate||'—'}</td>
+      <td class="mono">${r.endDate||'—'}</td>
+      <td><span style="font-size:.82rem;color:${csCnt>0?'var(--info)':'var(--text-muted)'};font-weight:600">${csCnt} lớp HP</span></td>
+      <td>${badgeActive(r.isActive)}</td>
+      <td>
+        <button class="action-btn view" title="Xem lớp HP thuộc HK này" onclick="drillToCS('semester','${r.id}','${r.name}')"><i class="bi bi-eye-fill"></i></button>
+        <button class="action-btn edit" title="Sửa" onclick='editRecord("semesters",${JSON.stringify(r)})'><i class="bi bi-pencil-fill"></i></button>
+        <button class="action-btn del" title="Xóa" onclick="deleteRecord('semesters','${r.id}')"><i class="bi bi-trash-fill"></i></button>
+      </td>`;
+    },
+    fillModal: (r) => {
+      setVals({'sm-id':r.id,'sm-code':r.code,'sm-name':r.name,'sm-school-year-id':r.schoolYearId||r.school_year_id,'sm-start':r.startDate,'sm-end':r.endDate});
+      document.getElementById('sm-active').checked=r.isActive!==false;
+      const sel=document.getElementById('sm-school-year-select');
+      if(sel) sel.value=r.schoolYearId||r.school_year_id||'';
+    },
+    getPayload: () => ({code:g('sm-code'),name:g('sm-name'),schoolYearId:g('sm-school-year-id')||null,startDate:g('sm-start')||null,endDate:g('sm-end')||null,isActive:document.getElementById('sm-active').checked,updatedAt:now()}),
+    resetModal: () => { clearVals(['sm-id','sm-code','sm-name','sm-school-year-id','sm-start','sm-end']); document.getElementById('sm-active').checked=true; document.getElementById('sm-school-year-select').value=''; }
+  },
+  'course-sections': {
+    endpoint: '/course-sections', title: 'Lớp học phần', prefix: 'cs',
+    getRow: (r) => {
+      const sm = findSMById(r.semesterId || r.semester_id);
+      const svCnt = countSCSForCS(r.id);
+      const gvCnt = countLCCForCS(r.id);
+      return `<td><span class="mono strong">${r.code||''}</span></td>
+      <td>${sm ? `<span style="font-size:.8rem;color:var(--text-secondary)">${sm.name}</span>` : `<span class="mono" style="font-size:.74rem">${(r.semesterId||'').substring(0,8)}…</span>`}</td>
+      <td><span class="badge" style="background:var(--surface-3);color:var(--text-secondary)">${r.classType||'—'}</span></td>
+      <td><span style="font-size:.82rem">${r.minStudents||0}/${r.maxStudents||0}</span></td>
+      <td>
+        <button class="btn btn-xs btn-outline" style="gap:4px" onclick="drillToSCS('course-section','${r.id}','${(r.code||'')}')">
+          <i class="bi bi-people"></i> ${svCnt} SV
+        </button>
+      </td>
+      <td>
+        <button class="btn btn-xs btn-outline" style="gap:4px" onclick="drillToLCC('course-section','${r.id}','${(r.code||'')}')">
+          <i class="bi bi-person-workspace"></i> ${gvCnt} GV
+        </button>
+      </td>
+      <td>${badgeStatus(r.status)}</td>
+      <td>
+        <button class="action-btn view" title="Chi tiết" onclick="viewCSDetail('${r.id}')"><i class="bi bi-eye-fill"></i></button>
+        <button class="action-btn edit" title="Sửa" onclick='editRecord("course-sections",${JSON.stringify(r)})'><i class="bi bi-pencil-fill"></i></button>
+        <button class="action-btn del" title="Xóa" onclick="deleteRecord('course-sections','${r.id}')"><i class="bi bi-trash-fill"></i></button>
+      </td>`;
+    },
+    fillModal: (r) => {
+      setVals({'cs-id':r.id,'cs-code':r.code,'cs-course-id':r.courseId,'cs-semester-id':r.semesterId||r.semester_id,'cs-room-id':r.roomId,'cs-building-id':r.buildingId,'cs-min-students':r.minStudents,'cs-max-students':r.maxStudents,'cs-class-type':r.classType,'cs-note':r.note,'cs-reg-start':r.registrationStart?r.registrationStart.substring(0,16):'','cs-reg-end':r.registrationEnd?r.registrationEnd.substring(0,16):''});
+      document.getElementById('cs-status').value=r.status||'open';
+      document.getElementById('cs-active').checked=r.isActive!==false;
+      const sel=document.getElementById('cs-semester-select');
+      if(sel) sel.value=r.semesterId||r.semester_id||'';
+    },
+    getPayload: () => ({code:g('cs-code'),courseId:g('cs-course-id')||null,semesterId:g('cs-semester-id')||null,roomId:g('cs-room-id')||null,buildingId:g('cs-building-id')||null,minStudents:parseInt(g('cs-min-students'))||null,maxStudents:parseInt(g('cs-max-students'))||null,classType:g('cs-class-type'),status:document.getElementById('cs-status').value,registrationStart:g('cs-reg-start')||null,registrationEnd:g('cs-reg-end')||null,note:g('cs-note'),isActive:document.getElementById('cs-active').checked,updatedAt:now()}),
+    resetModal: () => { clearVals(['cs-id','cs-code','cs-course-id','cs-semester-id','cs-room-id','cs-building-id','cs-min-students','cs-max-students','cs-class-type','cs-reg-start','cs-reg-end','cs-note']); document.getElementById('cs-status').value='open'; document.getElementById('cs-active').checked=true; document.getElementById('cs-semester-select').value=''; }
+  },
+  'student-course-sections': {
+    endpoint: '/student-course-sections', title: 'Đăng ký học phần', prefix: 'scs',
+    getRow: (r) => {
+      const cs = findCSById(r.courseSectionId || r.course_section_id);
+      const sm = cs ? findSMById(cs.semesterId || cs.semester_id) : null;
+      const svLabel = getUserLabel(r.studentId || r.student_id);
+      return `<td>
+        <div style="display:flex;align-items:center;gap:7px">
+          <div class="student-avatar-sm"><span>${svLabel.charAt(0).toUpperCase()}</span></div>
+          <span style="font-size:.84rem;font-weight:600">${svLabel}</span>
+        </div>
+      </td>
+      <td><span style="font-size:.82rem">${cs ? (cs.code + (cs.name?'<br><span style="color:var(--text-muted);font-size:.75rem">'+cs.name+'</span>':'')) : (r.courseSectionId||'').substring(0,8)+'…'}</span></td>
+      <td><span style="font-size:.8rem;color:var(--text-secondary)">${sm ? sm.name : '—'}</span></td>
+      <td>${badgeScsStatus(r.status)}</td>
+      <td class="mono">${r.registeredAt?(r.registeredAt.substring(0,10)):'—'}</td>
+      <td style="max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.note||''}</td>
+      <td>${badgeActive(r.isActive)}</td>
+      <td>
+        <button class="action-btn edit" title="Sửa" onclick='editRecord("student-course-sections",${JSON.stringify(r)})'><i class="bi bi-pencil-fill"></i></button>
+        <button class="action-btn del" title="Xóa" onclick="deleteRecord('student-course-sections','${r.id}')"><i class="bi bi-trash-fill"></i></button>
+      </td>`;
+    },
+    fillModal: (r) => {
+      setVals({'scs-id':r.id,'scs-student-id':r.studentId||r.student_id,'scs-course-section-id':r.courseSectionId||r.course_section_id,'scs-registered-at':r.registeredAt?r.registeredAt.substring(0,16):'','scs-note':r.note});
+      document.getElementById('scs-status').value=r.status||'studying';
+      document.getElementById('scs-active').checked=r.isActive!==false;
+      document.getElementById('scs-student-select').value=r.studentId||r.student_id||'';
+      document.getElementById('scs-cs-select').value=r.courseSectionId||r.course_section_id||'';
+    },
+    getPayload: () => ({studentId:g('scs-student-id')||null,courseSectionId:g('scs-course-section-id')||null,status:document.getElementById('scs-status').value,registeredAt:g('scs-registered-at')||null,note:g('scs-note'),isActive:document.getElementById('scs-active').checked,updatedAt:now()}),
+    resetModal: () => { clearVals(['scs-id','scs-student-id','scs-course-section-id','scs-registered-at','scs-note']); document.getElementById('scs-status').value='studying'; document.getElementById('scs-active').checked=true; document.getElementById('scs-student-select').value=''; document.getElementById('scs-cs-select').value=''; }
+  },
+  'lecturer-course-classes': {
+    endpoint: '/lecturer-course-classes', title: 'GV dạy lớp', prefix: 'lcc',
+    getRow: (r) => {
+      const cs = findCSById(r.courseClassId || r.course_class_id);
+      const sm = cs ? findSMById(cs.semesterId || cs.semester_id) : null;
+      const gvLabel = getUserLabel(r.employeeId || r.employee_id);
+      return `<td>
+        <div style="display:flex;align-items:center;gap:7px">
+          <div class="student-avatar-sm" style="background:linear-gradient(135deg,#334155,#475569)"><span>${gvLabel.charAt(0).toUpperCase()}</span></div>
+          <span style="font-size:.84rem;font-weight:600">${gvLabel}</span>
+        </div>
+      </td>
+      <td><span style="font-size:.82rem">${cs ? cs.code : (r.courseClassId||'').substring(0,8)+'…'}</span>${cs&&cs.name?`<br><span style="font-size:.74rem;color:var(--text-muted)">${cs.name}</span>`:''}</td>
+      <td><span style="font-size:.8rem;color:var(--text-secondary)">${sm ? sm.name : '—'}</span></td>
+      <td>${badgeLccRole(r.role)}</td>
+      <td>${badgeActive(r.isActive)}</td>
+      <td class="mono">${(r.createdAt||'').substring(0,10)||'—'}</td>
+      <td>
+        <button class="action-btn edit" title="Sửa" onclick='editRecord("lecturer-course-classes",${JSON.stringify(r)})'><i class="bi bi-pencil-fill"></i></button>
+        <button class="action-btn del" title="Xóa" onclick="deleteRecord('lecturer-course-classes','${r.id}')"><i class="bi bi-trash-fill"></i></button>
+      </td>`;
+    },
+    fillModal: (r) => {
+      setVals({'lcc-id':r.id,'lcc-employee-id':r.employeeId||r.employee_id,'lcc-course-class-id':r.courseClassId||r.course_class_id});
+      document.getElementById('lcc-role').value=r.role||'Giảng viên chính';
+      document.getElementById('lcc-active').checked=r.isActive!==false;
+      document.getElementById('lcc-employee-select').value=r.employeeId||r.employee_id||'';
+      document.getElementById('lcc-cs-select').value=r.courseClassId||r.course_class_id||'';
+    },
+    getPayload: () => ({employeeId:g('lcc-employee-id')||null,courseClassId:g('lcc-course-class-id')||null,role:document.getElementById('lcc-role').value,isActive:document.getElementById('lcc-active').checked,updatedAt:now()}),
+    resetModal: () => { clearVals(['lcc-id','lcc-employee-id','lcc-course-class-id']); document.getElementById('lcc-role').value='Giảng viên chính'; document.getElementById('lcc-active').checked=true; document.getElementById('lcc-employee-select').value=''; document.getElementById('lcc-cs-select').value=''; }
+  },
+  'users': {
+    endpoint: '/users', title: 'Người dùng', prefix: 'usr',
+    getRow: (r) => {
+      const roles=(r.roles||[]).map(role=>`<span class="badge badge-role">${role.name||role.roleName||''}</span>`).join(' ');
+      return `<td><div style="display:flex;align-items:center;gap:8px"><div class="student-avatar-sm"><span>${(r.username||'?').charAt(0).toUpperCase()}</span></div><span class="strong">${r.username||''}</span></div></td>
+      <td style="color:var(--text-secondary)">${r.email||''}</td>
+      <td class="mono">${r.phone||''}</td>
+      <td>${roles||'<span style="color:var(--text-muted);font-size:.8rem">—</span>'}</td>
+      <td>${badgeActive(r.isActive)}</td>
+      <td class="mono">${(r.createdAt||'').substring(0,10)}</td>
+      <td>
+        <button class="action-btn edit" title="Sửa" onclick='editRecord("users",${JSON.stringify(r)})'><i class="bi bi-pencil-fill"></i></button>
+        <button class="action-btn del" title="Xóa" onclick="deleteRecord('users','${r.id}')"><i class="bi bi-trash-fill"></i></button>
+      </td>`;
+    },
+    fillModal: (r) => { setVals({'usr-id':r.id,'usr-username':r.username,'usr-email':r.email,'usr-phone':r.phone,'usr-avatar':r.avatarUrl}); document.getElementById('usr-password').value=''; document.getElementById('usr-active').checked=r.isActive!==false; },
+    getPayload: () => ({username:g('usr-username'),password:g('usr-password'),email:g('usr-email'),phone:g('usr-phone'),avatarUrl:g('usr-avatar'),isActive:document.getElementById('usr-active').checked,updatedAt:now()}),
+    resetModal: () => { clearVals(['usr-id','usr-username','usr-password','usr-email','usr-phone','usr-avatar']); document.getElementById('usr-active').checked=true; }
+  }
+};
+
+/* ══════════════════════════════════════════
+   HELPERS
+══════════════════════════════════════════ */
+const g = id => document.getElementById(id)?.value || '';
+const now = () => new Date().toISOString();
+function setVals(obj){Object.entries(obj).forEach(([id,val])=>{const el=document.getElementById(id);if(el)el.value=val||'';})}
+function clearVals(ids){ids.forEach(id=>{const el=document.getElementById(id);if(el)el.value='';})}
+function badgeActive(v){return v?'<span class="badge badge-active">Active</span>':'<span class="badge badge-inactive">Inactive</span>';}
+function badgeStatus(s){return `<span class="badge badge-${s||'closed'}">${s||''}</span>`;}
+function badgeScsStatus(s){const l={studying:'Đang học',completed:'Hoàn thành',dropped:'Đã bỏ'};return `<span class="badge badge-${s||'studying'}">${l[s]||s||''}</span>`;}
+function badgeLccRole(r){return r==='Giảng viên chính'?'<span class="badge badge-main"><i class="bi bi-star-fill" style="font-size:.65rem"></i>Chính</span>':'<span class="badge badge-sub">Phụ</span>';}
+function toast(msg,type='success'){const tc=document.getElementById('toast-container');const d=document.createElement('div');d.className=`toast toast-${type}`;d.innerHTML=`<i class="bi bi-${type==='success'?'check-circle-fill':'exclamation-circle-fill'}"></i>${msg}`;tc.appendChild(d);setTimeout(()=>d.remove(),3200);}
+
+/* ══════════════════════════════════════════
+   TAB + NAV
+══════════════════════════════════════════ */
+function showTab(name){
+  document.querySelectorAll('.tab-content').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(el=>el.classList.toggle('active',el.dataset.tab===name));
+  const el=document.getElementById('tab-'+name);
+  if(el) el.classList.add('active');
+  const titles={'dashboard':'Dashboard','academic-years':'Niên khóa','school-years':'Khóa học','semesters':'Học kỳ','course-sections':'Lớp học phần','student-course-sections':'Sinh viên trong lớp','lecturer-course-classes':'Giảng viên dạy lớp','users':'Người dùng'};
+  document.getElementById('page-title').textContent=titles[name]||name;
+  if(name==='school-years') renderSchoolYearsTab();
+  if(name==='dashboard') renderDashboard();
+}
+function setNavActive(el){document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));el.classList.add('active');}
+function setNavActiveById(id){document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));const el=document.getElementById(id);if(el)el.classList.add('active');}
+
+/* ══════════════════════════════════════════
+   DATA LOAD
+══════════════════════════════════════════ */
+async function loadData(module) {
+  const m = MODULES[module];
+  const tbody = document.getElementById('tbody-'+module);
+  if(tbody) tbody.innerHTML='<tr><td colspan="10"><div class="loading-state"><div class="spinner"></div></div></td></tr>';
+  try {
+    const res = await fetch(BASE + m.endpoint);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    CACHE[module] = data;
+    renderTable(module, data);
+    return data;
+  } catch(err) {
+    if(tbody) tbody.innerHTML=`<tr><td colspan="10"><div class="empty-state"><i class="bi bi-wifi-off"></i><p>Lỗi kết nối: ${err.message}</p></div></td></tr>`;
+    toast('Không thể tải '+m.title+': '+err.message,'error');
+    return [];
+  }
+}
+
+function renderTable(module, data) {
+  const tbody = document.getElementById('tbody-'+module);
+  if(!tbody) return;
+  const m = MODULES[module];
+  if(!data||!data.length){tbody.innerHTML='<tr><td colspan="10"><div class="empty-state"><i class="bi bi-inbox"></i><p>Không có dữ liệu</p></div></td></tr>';return;}
+  tbody.innerHTML = data.map(r=>`<tr>${m.getRow(r)}</tr>`).join('');
+}
+
+function searchLive(module, q) {
+  const lower = q.toLowerCase();
+  document.querySelectorAll(`#tbody-${module} tr`).forEach(tr => {
+    tr.style.display = tr.textContent.toLowerCase().includes(lower) ? '' : 'none';
+  });
+}
+
+/* ══════════════════════════════════════════
+   FILTER METHODS
+══════════════════════════════════════════ */
+async function filterActive(module){
+  const m=MODULES[module];const tbody=document.getElementById('tbody-'+module);
+  tbody.innerHTML='<tr><td colspan="10"><div class="loading-state"><div class="spinner"></div></div></td></tr>';
+  try{const res=await fetch(`${BASE}${m.endpoint}/active`);if(!res.ok)throw new Error(`HTTP ${res.status}`);const d=await res.json();CACHE[module]=d;renderTable(module,d);}
+  catch(err){toast('Lỗi: '+err.message,'error');}
+}
+async function filterByStatus(module,status){
+  if(!status){loadData(module);return;}
+  const m=MODULES[module];const tbody=document.getElementById('tbody-'+module);
+  tbody.innerHTML='<tr><td colspan="10"><div class="loading-state"><div class="spinner"></div></div></td></tr>';
+  try{const res=await fetch(`${BASE}${m.endpoint}/by-status?status=${encodeURIComponent(status)}`);if(!res.ok)throw new Error(`HTTP ${res.status}`);renderTable(module,await res.json());}
+  catch(err){toast('Lỗi lọc: '+err.message,'error');}
+}
+async function filterByRole(role){
+  if(!role){loadData('lecturer-course-classes');return;}
+  const tbody=document.getElementById('tbody-lecturer-course-classes');
+  tbody.innerHTML='<tr><td colspan="7"><div class="loading-state"><div class="spinner"></div></div></td></tr>';
+  try{const res=await fetch(`${BASE}/lecturer-course-classes/by-role?role=${encodeURIComponent(role)}`);if(!res.ok)throw new Error(`HTTP ${res.status}`);renderTable('lecturer-course-classes',await res.json());}
+  catch(err){toast('Lỗi: '+err.message,'error');}
+}
+function filterSemByAY(ayId) {
+  if(!ayId){loadData('semesters');return;}
+  const ay = CACHE['academic-years'].find(a=>a.id===ayId);
+  if(!ay) return;
+  const sys = generateSchoolYears(ay);
+  const syNames = new Set(sys.map(sy=>sy.name));
+  const filtered = (CACHE['semesters']||[]).filter(sm => {
+    const inferred = findSYBySemester(sm);
+    return inferred && syNames.has(inferred.name);
+  });
+  renderTable('semesters', filtered);
+}
+function filterCSBySemester(smId) {
+  const bc = document.getElementById('cs-breadcrumb');
+  const bt = document.getElementById('cs-breadcrumb-text');
+  if(!smId){clearCSFilter();return;}
+  const sm = findSMById(smId);
+  if(bc){bc.style.display='flex';bt.textContent=sm?sm.name:smId;}
+  const filtered = (CACHE['course-sections']||[]).filter(r=>r.semesterId===smId||r.semester_id===smId);
+  renderTable('course-sections',filtered);
+}
+function clearCSFilter(){
+  document.getElementById('filter-cs-sm').value='';
+  document.getElementById('cs-breadcrumb').style.display='none';
+  renderTable('course-sections',CACHE['course-sections']||[]);
+}
+function filterSCSByCS(csId) {
+  const bc=document.getElementById('scs-breadcrumb'),bt=document.getElementById('scs-breadcrumb-text');
+  if(!csId){clearSCSFilter();return;}
+  const cs=findCSById(csId);
+  if(bc){bc.style.display='flex';bt.textContent=cs?cs.code:csId;}
+  const filtered=(CACHE['student-course-sections']||[]).filter(r=>r.courseSectionId===csId||r.course_section_id===csId);
+  renderTable('student-course-sections',filtered);
+}
+function clearSCSFilter(){
+  document.getElementById('filter-scs-cs').value='';
+  document.getElementById('scs-breadcrumb').style.display='none';
+  renderTable('student-course-sections',CACHE['student-course-sections']||[]);
+}
+function filterLCCByCS(csId) {
+  if(!csId){loadData('lecturer-course-classes');return;}
+  const filtered=(CACHE['lecturer-course-classes']||[]).filter(r=>r.courseClassId===csId||r.course_class_id===csId);
+  renderTable('lecturer-course-classes',filtered);
+}
+
+/* DRILL-DOWN navigations */
+function drillToCS(fromType, fromId, fromLabel) {
+  showTab('course-sections');
+  setNavActiveById('nav-course-sections');
+  const sel=document.getElementById('filter-cs-sm');
+  if(sel&&fromType==='semester') sel.value=fromId;
+  filterCSBySemester(fromId);
+}
+function drillToSCS(fromType, fromId, fromLabel) {
+  showTab('student-course-sections');
+  setNavActiveById('nav-student-course-sections');
+  const sel=document.getElementById('filter-scs-cs');
+  if(sel) sel.value=fromId;
+  filterSCSByCS(fromId);
+}
+function drillToLCC(fromType, fromId, fromLabel) {
+  showTab('lecturer-course-classes');
+  setNavActiveById('nav-lecturer-course-classes');
+  const sel=document.getElementById('filter-lcc-cs');
+  if(sel) sel.value=fromId;
+  filterLCCByCS(fromId);
+}
+
+/* ══════════════════════════════════════════
+   DROPDOWN REFRESH
+══════════════════════════════════════════ */
+function refreshAllDropdowns() {
+  // Semester filter on semesters tab (by AY)
+  const smAY = document.getElementById('filter-sm-ay');
+  if(smAY) {
+    const cur = smAY.value;
+    smAY.innerHTML = '<option value="">Lọc theo niên khóa</option>';
+    (CACHE['academic-years']||[]).forEach(ay=>{
+      smAY.innerHTML += `<option value="${ay.id}">${ay.code} — ${ay.name||ay.year||''}</option>`;
+    });
+    smAY.value = cur;
+  }
+
+  // Semester select for Course Section modal
+  const csSM = document.getElementById('cs-semester-select');
+  if(csSM) {
+    const cur=csSM.value;
+    csSM.innerHTML='<option value="">— Chọn học kỳ —</option>';
+    (CACHE['semesters']||[]).forEach(sm=>{
+      const sy=findSYBySemester(sm);
+      csSM.innerHTML+=`<option value="${sm.id}">${sm.name}${sy?' ('+sy.name+')':''}</option>`;
+    });
+    csSM.value=cur;
+  }
+
+  // Course Section filter on course-sections tab
+  const csSMFilter = document.getElementById('filter-cs-sm');
+  if(csSMFilter) {
+    const cur=csSMFilter.value;
+    csSMFilter.innerHTML='<option value="">Lọc theo học kỳ</option>';
+    (CACHE['semesters']||[]).forEach(sm=>{
+      const sy=findSYBySemester(sm);
+      csSMFilter.innerHTML+=`<option value="${sm.id}">${sm.name}${sy?' ('+sy.name+')':''}</option>`;
+    });
+    csSMFilter.value=cur;
+  }
+
+  // School year select for Semester modal — prefer real server school-years
+  const smSY = document.getElementById('sm-school-year-select');
+  if(smSY) {
+    const cur=smSY.value;
+    smSY.innerHTML='<option value="">— Chọn khóa học —</option>';
+    if ((CACHE['school-years']||[]).length > 0) {
+      // Use real server school-years (IDs match what server expects)
+      const seen = {};
+      (CACHE['school-years']||[]).forEach(sy=>{
+        const name = sy.name || sy.year || '';
+        if(seen[name]) return; seen[name]=true;
+        const ayId = sy.academicYearId || sy.academic_year_id;
+        const ay = (CACHE['academic-years']||[]).find(a=>a.id===ayId);
+        const badge = ay ? ay.code : '';
+        const label = sy.displayName || `Năm học ${name}`;
+        smSY.innerHTML+=`<option value="${sy.id}">[${badge}] ${label} (${sy.startDate||''}→${sy.endDate||''})</option>`;
+      });
+    } else {
+      // Fallback: virtual generated school years
+      const allSY = getAllSchoolYears();
+      const seen = {};
+      allSY.forEach(sy=>{
+        if(seen[sy.name]) return; seen[sy.name]=true;
+        const badge = getAYCodesForSY(sy.name).join('+');
+        smSY.innerHTML+=`<option value="${sy.id}">[${badge}] ${sy.displayName} (${sy.startDate}→${sy.endDate})</option>`;
+      });
+    }
+    smSY.value=cur;
+  }
+
+  // Student select for SCS modal
+  const scsStud = document.getElementById('scs-student-select');
+  if(scsStud) {
+    const cur=scsStud.value;
+    scsStud.innerHTML='<option value="">— Chọn sinh viên —</option>';
+    (CACHE['users']||[]).forEach(u=>{scsStud.innerHTML+=`<option value="${u.id}">${u.username}${u.email?' – '+u.email:''}</option>`;});
+    scsStud.value=cur;
+  }
+
+  // CS select for SCS modal
+  const scsCS = document.getElementById('scs-cs-select');
+  if(scsCS) {
+    const cur=scsCS.value;
+    scsCS.innerHTML='<option value="">— Chọn lớp học phần —</option>';
+    (CACHE['course-sections']||[]).forEach(cs=>{scsCS.innerHTML+=`<option value="${cs.id}">${cs.code}${cs.name?' – '+cs.name:''}</option>`;});
+    scsCS.value=cur;
+  }
+
+  // SCS filter on scs tab
+  const scsCSFilter = document.getElementById('filter-scs-cs');
+  if(scsCSFilter) {
+    const cur=scsCSFilter.value;
+    scsCSFilter.innerHTML='<option value="">Lọc theo lớp HP</option>';
+    (CACHE['course-sections']||[]).forEach(cs=>{scsCSFilter.innerHTML+=`<option value="${cs.id}">${cs.code}${cs.name?' – '+cs.name:''}</option>`;});
+    scsCSFilter.value=cur;
+  }
+
+  // Employee select for LCC modal
+  const lccEmp = document.getElementById('lcc-employee-select');
+  if(lccEmp) {
+    const cur=lccEmp.value;
+    lccEmp.innerHTML='<option value="">— Chọn giảng viên —</option>';
+    (CACHE['users']||[]).forEach(u=>{lccEmp.innerHTML+=`<option value="${u.id}">${u.username}${u.email?' – '+u.email:''}</option>`;});
+    lccEmp.value=cur;
+  }
+
+  // CS select for LCC modal
+  const lccCS = document.getElementById('lcc-cs-select');
+  if(lccCS) {
+    const cur=lccCS.value;
+    lccCS.innerHTML='<option value="">— Chọn lớp học phần —</option>';
+    (CACHE['course-sections']||[]).forEach(cs=>{lccCS.innerHTML+=`<option value="${cs.id}">${cs.code}${cs.name?' – '+cs.name:''}</option>`;});
+    lccCS.value=cur;
+  }
+
+  // LCC filter by CS
+  const lccCSFilter = document.getElementById('filter-lcc-cs');
+  if(lccCSFilter) {
+    const cur=lccCSFilter.value;
+    lccCSFilter.innerHTML='<option value="">Lọc theo lớp HP</option>';
+    (CACHE['course-sections']||[]).forEach(cs=>{lccCSFilter.innerHTML+=`<option value="${cs.id}">${cs.code}${cs.name?' – '+cs.name:''}</option>`;});
+    lccCSFilter.value=cur;
+  }
+}
+
+/* When school year selected in semester modal → auto-fill dates */
+function onSelectSchoolYear(syId) {
+  if(!syId) return;
+  const sy = findSYById(syId);
+  if(!sy) return;
+  document.getElementById('sm-school-year-id').value = syId;
+}
+
+function onSelectSemesterForCS(smId) {
+  document.getElementById('cs-semester-id').value = smId;
+}
+
+/* ══════════════════════════════════════════
+   SCHOOL YEARS TAB RENDER
+══════════════════════════════════════════ */
+async function renderSchoolYearsTab() {
+  const container = document.getElementById('sy-content');
+  if(!container) return;
+  if (!CACHE['academic-years'].length) {
+    container.innerHTML = '<div class="empty-state"><i class="bi bi-calendar-x"></i><p>Chưa có niên khóa nào. Hãy thêm niên khóa trước.</p></div>';
+    return;
+  }
+  const allSY = getAllSchoolYears();
+  let totalSEM = allSY.length * 2;
+
+  // Find which school years are shared
+  const syNameCount = {};
+  allSY.forEach(sy => { syNameCount[sy.name] = (syNameCount[sy.name]||0)+1; });
+
+  let html = `
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:8px">
+      <div>
+        <h2 style="font-size:1rem;font-weight:700;color:var(--navy)">Khóa học (School Years)</h2>
+        <p style="font-size:.78rem;color:var(--text-muted);margin-top:3px">
+          <span class="generated-badge"><i class="bi bi-magic"></i></span>
+          &nbsp;·&nbsp; <b>${allSY.length}</b> năm học tổng cộng · <b>${totalSEM}</b> học kỳ
+        </p>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-outline btn-sm" onclick="renderSchoolYearsTab()"><i class="bi bi-arrow-clockwise"></i> Tải lại</button>
+        <button class="btn btn-primary btn-sm" onclick="openModal('semesters')"><i class="bi bi-plus-lg"></i> Thêm học kỳ</button>
+      </div>
+    </div>
+   `;
+
+  for (const ay of CACHE['academic-years']) {
+    const sys = generateSchoolYears(ay);
+    if (!sys.length) continue;
+    const smCount = (CACHE['semesters']||[]).filter(sm=>{
+      const sy2 = findSYBySemester(sm);
+      return sy2 && sys.some(s=>s.name===sy2.name);
+    }).length;
+
+    html += `
+      <div class="ay-banner">
+        <div>
+          <div class="ay-banner-title"><i class="bi bi-calendar3" style="margin-right:6px"></i>Niên khóa ${ay.code} — ${ay.name||ay.year||''}</div>
+          <div class="ay-banner-sub">${ay.startDate||''} → ${ay.endDate||''}&nbsp;&nbsp;·&nbsp;&nbsp;${ay.description||''}</div>
+        </div>
+        <div class="ay-banner-stats">
+          <div class="ay-stat"><div class="ay-stat-n">${sys.length}</div><div class="ay-stat-l">Năm học</div></div>
+          <div class="ay-stat"><div class="ay-stat-n">${sys.length*2}</div><div class="ay-stat-l">Học kỳ tối đa</div></div>
+          <div class="ay-stat"><div class="ay-stat-n">${smCount}</div><div class="ay-stat-l">HK đã tạo</div></div>
+        </div>
+      </div>
+      <div class="sy-grid">`;
+
+    sys.forEach(sy => {
+      // Try to find real server school-year matching this virtual year
+      const realSY = (CACHE['school-years']||[]).find(r => {
+        const n = _normalizeSY(r);
+        return n.name === sy.name && (n._ayId === ay.id || !n._ayId);
+      });
+      // Use real ID if available (so prefill sends correct UUID to server)
+      const syIdForModal = realSY ? realSY.id : sy.id;
+      const codes = getAYCodesForSY(sy.name);
+      const isShared = codes.length >= 2;
+      const headColor = isShared
+        ? 'border-left:4px solid var(--purple)'
+        : codes[0]==='K23' ? 'border-left:4px solid var(--accent)' : 'border-left:4px solid var(--warning)';
+      const ownerBadge = syOwnerBadges(sy.name);
+
+      // Check existing semesters for this SY (match by inferred school year name)
+      const existingSMs = (CACHE['semesters']||[]).filter(sm=>{
+        const inferred = findSYBySemester(sm);
+        return inferred && inferred.name === sy.name;
+      });
+
+      html += `
+        <div class="sy-card">
+          <div class="sy-card-head" style="${headColor}">
+            <div>
+              <div class="sy-card-title"><i class="bi bi-calendar-range" style="margin-right:5px;color:var(--accent)"></i>${sy.displayName}</div>
+              <div class="sy-card-sub">${sy.startDate} → ${sy.endDate}</div>
+            </div>
+            ${ownerBadge}
+          </div>
+          <div class="sy-card-body">
+            <div class="divider-label">Học kỳ tự sinh</div>
+            <div class="sy-sem-list">`;
+
+      sy.semesters.forEach(sem => {
+        const existSM = existingSMs.find(sm => sm.name === sem.fullName || (sm.code && sm.code.includes(sem.hk === 1 ? 'HK1' : 'HK2')));
+        const csCnt = existSM ? countCSForSM(existSM.id) : 0;
+        html += `
+              <div class="sy-sem-item sy-sem-hk${sem.hk}">
+                <div style="flex:1">
+                  <div class="sy-sem-name">${sem.fullName}</div>
+                  <div class="sy-sem-dates">${sem.startDate} → ${sem.endDate}</div>
+                  ${existSM ? `<div style="margin-top:3px;font-size:.74rem;color:var(--success);font-weight:600"><i class="bi bi-check-circle-fill"></i> Đã tạo · ${csCnt} lớp HP</div>` : ''}
+                </div>
+                ${existSM
+                  ? `<button class="btn btn-xs btn-outline" onclick="drillToCS('semester','${existSM.id}','${sem.fullName}')"><i class="bi bi-eye"></i> Xem</button>`
+                  : `<button class="btn btn-xs btn-primary" onclick="prefillSemesterModal('${syIdForModal}','${sy.name}','${sem.fullName}','${sem.startDate}','${sem.endDate}')"><i class="bi bi-plus-lg"></i> Tạo HK</button>`
+                }
+              </div>`;
+      });
+
+      html += `
+            </div>
+          </div>
+        </div>`;
+    });
+
+    html += `</div>`;
+  }
+
+  container.innerHTML = html;
+}
+
+function prefillSemesterModal(syId, syName, semName, startDate, endDate) {
+  MODULES['semesters'].resetModal();
+  document.getElementById('sm-school-year-id').value = syId;
+  document.getElementById('sm-school-year-select').value = syId;
+  document.getElementById('sm-name').value = semName;
+  document.getElementById('sm-code').value = semName.replace(/\s+/g,'-').toUpperCase();
+  document.getElementById('sm-start').value = startDate;
+  document.getElementById('sm-end').value  = endDate;
+  document.getElementById('modal-semesters-title').textContent = 'Thêm Học kỳ';
+  document.getElementById('modal-semesters').classList.remove('hidden');
+}
+
+/* ══════════════════════════════════════════
+   DETAIL PANEL
+══════════════════════════════════════════ */
+function openDetailPanel(title, html) {
+  document.getElementById('dp-title').textContent = title;
+  document.getElementById('dp-body').innerHTML = html;
+  document.getElementById('detail-panel').classList.add('open');
+}
+function closeDetailPanel() {
+  document.getElementById('detail-panel').classList.remove('open');
+}
+
+function viewAYDetail(ayId) {
+  const ay = CACHE['academic-years'].find(a=>a.id===ayId);
+  if(!ay) return;
+  const sys = generateSchoolYears(ay);
+  let html = `
+    <div class="detail-section">
+      <div class="detail-section-title">Thông tin niên khóa</div>
+      <div class="detail-row"><span class="detail-label">Code</span><span class="detail-value">${ay.code}</span></div>
+      <div class="detail-row"><span class="detail-label">Tên</span><span class="detail-value">${ay.name||'—'}</span></div>
+      <div class="detail-row"><span class="detail-label">Bắt đầu</span><span class="detail-value">${ay.startDate||'—'}</span></div>
+      <div class="detail-row"><span class="detail-label">Kết thúc</span><span class="detail-value">${ay.endDate||'—'}</span></div>
+      <div class="detail-row"><span class="detail-label">Trạng thái</span><span>${badgeActive(ay.isActive)}</span></div>
+    </div>
+    <div class="detail-section">
+      <div class="detail-section-title">Các năm học (${sys.length})</div>`;
+  sys.forEach(sy => {
+    const codes = getAYCodesForSY(sy.name);
+    html += `<div style="padding:8px 0;border-bottom:1px solid var(--border)">
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <span style="font-weight:600;font-size:.85rem">${sy.displayName}</span>
+        ${syOwnerBadges(sy.name)}
+      </div>
+      <div style="font-size:.75rem;color:var(--text-muted)">${sy.startDate} → ${sy.endDate}</div>
+    </div>`;
+  });
+  html += `</div>`;
+  openDetailPanel(`Niên khóa ${ay.code}`, html);
+}
+
+function viewCSDetail(csId) {
+  const cs = findCSById(csId);
+  if(!cs) return;
+  const sm = findSMById(cs.semesterId||cs.semester_id);
+  const sy = sm ? findSYById(sm.schoolYearId||sm.school_year_id) : null;
+  const students = (CACHE['student-course-sections']||[]).filter(r=>r.courseSectionId===csId||r.course_section_id===csId);
+  const lecturers = (CACHE['lecturer-course-classes']||[]).filter(r=>r.courseClassId===csId||r.course_class_id===csId);
+
+  let html = `
+    <div class="detail-section">
+      <div class="detail-section-title">Thông tin lớp học phần</div>
+      <div class="detail-row"><span class="detail-label">Code</span><span class="detail-value">${cs.code||'—'}</span></div>
+      <div class="detail-row"><span class="detail-label">Tên</span><span class="detail-value">${cs.name||'—'}</span></div>
+      <div class="detail-row"><span class="detail-label">Loại</span><span class="detail-value">${cs.classType||'—'}</span></div>
+      <div class="detail-row"><span class="detail-label">Học kỳ</span><span class="detail-value">${sm?sm.name:'—'}</span></div>
+      <div class="detail-row"><span class="detail-label">Năm học</span><span class="detail-value">${sy?sy.displayName:'—'}</span></div>
+      <div class="detail-row"><span class="detail-label">Sĩ số</span><span class="detail-value">${cs.minStudents||0} – ${cs.maxStudents||0}</span></div>
+      <div class="detail-row"><span class="detail-label">Trạng thái</span><span>${badgeStatus(cs.status)}</span></div>
+    </div>
+    <div class="detail-section">
+      <div class="detail-section-title">Giảng viên phụ trách (${lecturers.length})</div>`;
+  if(lecturers.length) {
+    lecturers.forEach(lcc=>{
+      const u=findUserById(lcc.employeeId||lcc.employee_id);
+      html+=`<div class="student-item">
+        <div class="student-avatar-sm" style="background:linear-gradient(135deg,#334155,#475569)"><span>${(u?u.username:'?').charAt(0).toUpperCase()}</span></div>
+        <div style="flex:1"><div style="font-size:.84rem;font-weight:600">${u?u.username:'—'}</div><div style="font-size:.74rem;color:var(--text-muted)">${u?u.email||'':''}</div></div>
+        ${badgeLccRole(lcc.role)}
+      </div>`;
+    });
+  } else { html+='<div style="font-size:.82rem;color:var(--text-muted)">Chưa phân công giảng viên</div>'; }
+  html += `</div>
+    <div class="detail-section">
+      <div class="detail-section-title">Sinh viên đăng ký (${students.length})</div>`;
+  if(students.length) {
+    students.forEach(scs=>{
+      const u=findUserById(scs.studentId||scs.student_id);
+      html+=`<div class="student-item">
+        <div class="student-avatar-sm"><span>${(u?u.username:'?').charAt(0).toUpperCase()}</span></div>
+        <div style="flex:1"><div style="font-size:.84rem;font-weight:600">${u?u.username:'—'}</div></div>
+        ${badgeScsStatus(scs.status)}
+      </div>`;
+    });
+  } else { html+='<div style="font-size:.82rem;color:var(--text-muted)">Chưa có sinh viên đăng ký</div>'; }
+  html += '</div>';
+  openDetailPanel(`Lớp: ${cs.code||cs.name}`, html);
+}
+
+/* ══════════════════════════════════════════
+   DASHBOARD
+══════════════════════════════════════════ */
+function updateDashboardStats() {
+  const ay = CACHE['academic-years']||[];
+  const sy = getAllSchoolYears();
+  document.getElementById('stat-ay').textContent = ay.length;
+  document.getElementById('stat-sy').textContent = sy.length;
+  document.getElementById('stat-sm').textContent = (CACHE['semesters']||[]).length;
+  document.getElementById('stat-cs').textContent = (CACHE['course-sections']||[]).length;
+  document.getElementById('stat-usr').textContent = (CACHE['users']||[]).length;
+}
+
+function renderDashboard() {
+  const tree = document.getElementById('dashboard-tree');
+  if(!tree) return;
+  const ays = CACHE['academic-years']||[];
+  if(!ays.length){tree.innerHTML='<div class="empty-state"><i class="bi bi-diagram-3"></i><p>Chưa có dữ liệu. Hãy thêm niên khóa và tải lại.</p></div>';return;}
+
+  let html='<div style="font-size:.82rem">';
+  ays.forEach(ay=>{
+    const sys = generateSchoolYears(ay);
+    const totalCS = (CACHE['course-sections']||[]).filter(cs=>{
+      const sm=findSMById(cs.semesterId||cs.semester_id);
+      if(!sm) return false;
+      const sy2=findSYBySemester(sm);
+      return sy2 && sys.some(s=>s.name===sy2.name);
+    }).length;
+    html+=`<div style="margin-bottom:1rem;padding:12px;border:1px solid var(--border);border-radius:var(--radius-lg);background:var(--surface)">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+        <i class="bi bi-calendar3" style="color:var(--accent)"></i>
+        <span style="font-weight:700;color:var(--navy)">${ay.code} — ${ay.name||ay.year||''}</span>
+        ${badgeActive(ay.isActive)}
+        <span style="margin-left:auto;font-size:.78rem;color:var(--text-muted)">${sys.length} năm · ${totalCS} lớp HP</span>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:6px">`;
+    sys.forEach(sy=>{
+      const sms=(CACHE['semesters']||[]).filter(sm=>{
+        const inferred=findSYBySemester(sm);
+        return inferred && inferred.name===sy.name;
+      });
+      const codes=getAYCodesForSY(sy.name);
+      const isShared=codes.length>=2;
+      const bg=isShared?'background:#f5f3ff;border-color:#c4b5fd':codes[0]==='K23'?'background:#eff6ff;border-color:#93c5fd':'background:#fff7ed;border-color:#fed7aa';
+      html+=`<div style="padding:8px 10px;border-radius:8px;border:1px solid;${bg}">
+        <div style="font-weight:600;font-size:.82rem;color:var(--navy)">${sy.name}</div>
+        <div style="font-size:.73rem;color:var(--text-muted)">${sms.length}/2 HK tạo</div>
+        ${isShared?'<span style="font-size:.7rem;color:#7c3aed;font-weight:600">Dùng chung</span>':''}
+      </div>`;
+    });
+    html+='</div></div>';
+  });
+  html+='</div>';
+  tree.innerHTML=html;
+  updateDashboardStats();
+}
+
+/* ══════════════════════════════════════════
+   CRUD
+══════════════════════════════════════════ */
+function openModal(module) {
+  const m = MODULES[module];
+  if(!m) {
+    document.getElementById('modal-'+module).classList.remove('hidden');
+    return;
+  }
+  m.resetModal();
+  const titleEl = document.getElementById('modal-'+module+'-title');
+  if(titleEl) titleEl.textContent = 'Thêm '+m.title;
+  document.getElementById('modal-'+module).classList.remove('hidden');
+  // refresh dropdowns inside modal
+  refreshAllDropdowns();
+}
+function closeModal(module){document.getElementById('modal-'+module).classList.add('hidden');}
+function editRecord(module, record) {
+  MODULES[module].fillModal(record);
+  const titleEl=document.getElementById('modal-'+module+'-title');
+  if(titleEl) titleEl.textContent='Sửa '+MODULES[module].title;
+  document.getElementById('modal-'+module).classList.remove('hidden');
+}
+document.querySelectorAll('.modal-overlay').forEach(overlay=>{
+  overlay.addEventListener('click',e=>{if(e.target===overlay)overlay.classList.add('hidden');});
+});
+
+async function saveData(module) {
+  const m = MODULES[module];
+  const prefix = m.prefix;
+  const id = document.getElementById(prefix+'-id')?.value || '';
+  const payload = m.getPayload();
+  try {
+    let res;
+    if(id){
+      res=await fetch(`${BASE}${m.endpoint}/${id}`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    } else {
+      payload.createdAt=now();
+      res=await fetch(`${BASE}${m.endpoint}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    }
+    if(!res.ok) throw new Error(`HTTP ${res.status}: ${await res.text()}`);
+    closeModal(module);
+    toast((id?'Cập nhật':'Thêm')+' '+m.title+' thành công!','success');
+    await loadData(module);
+    refreshAllDropdowns();
+    if(module==='academic-years'||module==='semesters') renderSchoolYearsTab();
+    renderDashboard();
+  } catch(err){toast('Lỗi lưu: '+err.message,'error');}
+}
+
+async function deleteRecord(module, id) {
+  if(!confirm('Bạn có chắc muốn xóa bản ghi này?')) return;
+  const m = MODULES[module];
+  try {
+    const res=await fetch(`${BASE}${m.endpoint}/${id}`,{method:'DELETE'});
+    if(!res.ok) throw new Error(`HTTP ${res.status}`);
+    toast('Xóa '+m.title+' thành công!','success');
+    await loadData(module);
+    refreshAllDropdowns();
+    if(module==='academic-years'||module==='semesters') renderSchoolYearsTab();
+    renderDashboard();
+  } catch(err){toast('Lỗi xóa: '+err.message,'error');}
+}
+
+async function saveUser() {
+  const id=g('usr-id');
+  const payload=MODULES['users'].getPayload();
+  if(!payload.username){toast('Tên đăng nhập không được trống.','error');return;}
+  if(!id&&!payload.password){toast('Mật khẩu không được trống khi tạo mới.','error');return;}
+  try {
+    const p=new URLSearchParams({username:payload.username,password:payload.password,email:payload.email,phone:payload.phone||'',avatarUrl:payload.avatarUrl||''});
+    const res=await fetch(`${BASE}/users?${p}`,{method:'POST'});
+    if(!res.ok) throw new Error(`HTTP ${res.status}: ${await res.text()}`);
+    closeModal('users');
+    toast((id?'Cập nhật':'Thêm')+' người dùng thành công!','success');
+    await loadData('users');
+    refreshAllDropdowns();
+  } catch(err){toast('Lỗi: '+err.message,'error');}
+}
+
+/* SEED K23 + K24 */
+async function seedAcademicYears() {
+  const seeds = [
+    {code:'K23',name:'Niên khóa 2023-2027',year:'2023-2027',description:'Khóa tuyển sinh 2023, kết thúc 2027',startDate:'2023-09-01',endDate:'2027-06-30',isActive:true,createdAt:now(),updatedAt:now()},
+    {code:'K24',name:'Niên khóa 2024-2029',year:'2024-2029',description:'Khóa tuyển sinh 2024, kết thúc 2029',startDate:'2024-09-01',endDate:'2029-06-30',isActive:true,createdAt:now(),updatedAt:now()},
+  ];
+  closeModal('academic-years-seed');
+  let created=0;
+  for(const s of seeds) {
+    const exists = CACHE['academic-years'].find(a=>a.code===s.code);
+    if(exists){toast(`${s.code} đã tồn tại, bỏ qua.`,'success');continue;}
+    try {
+      const res=await fetch(`${BASE}/academic-years`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(s)});
+      if(!res.ok) throw new Error(`HTTP ${res.status}`);
+      created++;
+    } catch(err){toast(`Lỗi tạo ${s.code}: `+err.message,'error');}
+  }
+  if(created>0) toast(`Đã tạo ${created} niên khóa mẫu!`,'success');
+  await loadData('academic-years');
+  refreshAllDropdowns();
+  renderSchoolYearsTab();
+  renderDashboard();
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('login-password').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
+  document.getElementById('reg-confirm').addEventListener('keydown',e=>{if(e.key==='Enter')doRegister();});
+  document.getElementById('sidebar-toggle').addEventListener('click', () => {
+    const s = document.querySelector('.sidebar');
+    s.style.width = s.style.width==='0px' ? 'var(--sidebar-w)' : '0px';
+  });
+  tryAutoLogin();
+});
+</script>
+</body>
+</html>
