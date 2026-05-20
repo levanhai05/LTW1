@@ -10,14 +10,9 @@ import org.hibernate.annotations.UuidGenerator;
 @Table(name = "students")
 public class Student {
     @Id
-    @GeneratedValue
-    @UuidGenerator   // Hibernate 6+
-    @Column(columnDefinition = "UNIQUEIDENTIFIER",
-            updatable = false,
-            nullable = false)
-    private UUID id;
+@GeneratedValue(strategy = GenerationType.UUID)
+private UUID id;
 
-    @Column(columnDefinition = "UNIQUEIDENTIFIER")
 	private UUID user_id;
     
     @Column(name = "code", length = 20)
@@ -47,22 +42,17 @@ public class Student {
     @Column(name = "current_address", length = 300)
     private String current_address;
 
-    @Column(columnDefinition = "UNIQUEIDENTIFIER")
     private UUID academic_year_year;
     
-    @Column(columnDefinition = "UNIQUEIDENTIFIER")
     private UUID department_id;
 
-    @Column(columnDefinition = "UNIQUEIDENTIFIER")
     private UUID major_id;
     
-    @Column(columnDefinition = "UNIQUEIDENTIFIER")
     private UUID training_program_id;
 
     @Column(name = "status", length = 50)
     private String status;
 
-    @Column(columnDefinition = "UNIQUEIDENTIFIER")
     private UUID student_classe_id;
 
     @Column(name = "admission_year")
