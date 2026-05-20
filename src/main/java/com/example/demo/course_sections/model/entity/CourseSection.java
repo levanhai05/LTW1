@@ -16,10 +16,8 @@ import jakarta.persistence.Table;
 public class CourseSection {
 
     @Id
-    @GeneratedValue
-    @UuidGenerator
-    @Column(columnDefinition = "UNIQUEIDENTIFIER", updatable = false, nullable = false)
-    private UUID id;
+@GeneratedValue(strategy = GenerationType.UUID)
+private UUID id;
 
     @Column(name = "code", length = 50)
     private String code;
@@ -34,19 +32,14 @@ public class CourseSection {
     @Column(name = "academic_year", length = 20)
     private String academicYear;
 
-    @Column(name = "course_id", columnDefinition = "UNIQUEIDENTIFIER")
     private UUID courseId;
 
-    @Column(name = "semester_id", columnDefinition = "UNIQUEIDENTIFIER")
     private UUID semesterId;
 
-    @Column(name = "employee_id", columnDefinition = "UNIQUEIDENTIFIER")
     private UUID employeeId;
 
-    @Column(name = "room_id", columnDefinition = "UNIQUEIDENTIFIER")
     private UUID roomId;
 
-    @Column(name = "building_id", columnDefinition = "UNIQUEIDENTIFIER")
     private UUID buildingId;
 
     @Column(name = "max_students")
@@ -76,16 +69,13 @@ public class CourseSection {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @Column(name = "created_by", columnDefinition = "UNIQUEIDENTIFIER")
     private UUID createdBy;
 
-    @Column(name = "updated_by", columnDefinition = "UNIQUEIDENTIFIER")
     private UUID updatedBy;
 
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
 
-    @Column(name = "deleted_by", columnDefinition = "UNIQUEIDENTIFIER")
     private UUID deletedBy;
 
     @Column(name = "is_active")
