@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-import org.hibernate.annotations.UuidGenerator;
+import jakarta.persistence.*;
 
 import com.example.demo.roles.model.entity.Role;
 
