@@ -13,7 +13,7 @@ public class Student {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    // Đổi UUID -> Integer cho khớp DB
+    // Integer cho khớp DB
     private Integer user_id;
 
     @Column(name = "code", length = 20)
@@ -43,7 +43,7 @@ public class Student {
     @Column(name = "current_address", length = 300)
     private String current_address;
 
-    // Đổi UUID -> Integer
+    // Integer cho khớp DB
     private Integer academic_year_year;
 
     private Integer department_id;
@@ -66,18 +66,18 @@ public class Student {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    // Có thể giữ UUID nếu DB là uuid
+    // đổi UUID -> Integer
     @Column(name = "created_by")
-    private UUID createdBy;
+    private Integer createdBy;
 
     @Column(name = "updated_by")
-    private UUID updatedBy;
+    private Integer updatedBy;
 
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
 
     @Column(name = "deleted_by")
-    private UUID deletedBy;
+    private Integer deletedBy;
 
     @Column(name = "is_active")
     private Boolean isActive;
@@ -105,10 +105,10 @@ public class Student {
             Integer admission_year,
             LocalDateTime createdAt,
             LocalDateTime updatedAt,
-            UUID createdBy,
-            UUID updatedBy,
+            Integer createdBy,
+            Integer updatedBy,
             LocalDateTime deletedAt,
-            UUID deletedBy,
+            Integer deletedBy,
             Boolean isActive
     ) {
         this.user_id = user_id;
@@ -297,19 +297,19 @@ public class Student {
         this.updatedAt = updatedAt;
     }
 
-    public UUID getCreatedBy() {
+    public Integer getCreatedBy() {
         return createdBy;
     }
 
-    public void setCreatedBy(UUID createdBy) {
+    public void setCreatedBy(Integer createdBy) {
         this.createdBy = createdBy;
     }
 
-    public UUID getUpdatedBy() {
+    public Integer getUpdatedBy() {
         return updatedBy;
     }
 
-    public void setUpdatedBy(UUID updatedBy) {
+    public void setUpdatedBy(Integer updatedBy) {
         this.updatedBy = updatedBy;
     }
 
@@ -321,11 +321,11 @@ public class Student {
         this.deletedAt = deletedAt;
     }
 
-    public UUID getDeletedBy() {
+    public Integer getDeletedBy() {
         return deletedBy;
     }
 
-    public void setDeletedBy(UUID deletedBy) {
+    public void setDeletedBy(Integer deletedBy) {
         this.deletedBy = deletedBy;
     }
 
