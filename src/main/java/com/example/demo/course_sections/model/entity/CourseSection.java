@@ -24,9 +24,8 @@ private UUID id;
 
     // Tên học phần — DB dùng cột note làm tên tạm (course_id là NEWID() chưa liên
     // kết)
-    // Ưu tiên: courses.name nếu có, fallback về note
-    @org.hibernate.annotations.Formula("(SELECT COALESCE(c.name, note) FROM course_sections cs2 LEFT JOIN courses c ON c.id = cs2.course_id WHERE cs2.id = id)")
-    private String name;
+    @Column(name = "name")
+private String name;
 
     // academic_year và employee_id
     @Column(name = "academic_year", length = 20)
