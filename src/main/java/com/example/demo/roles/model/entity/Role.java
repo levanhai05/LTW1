@@ -15,9 +15,9 @@ import jakarta.persistence.Table;
 @Table(name = "roles")
 public class Role {
 
-    @Id @GeneratedValue @UuidGenerator
-    @Column(columnDefinition = "UNIQUEIDENTIFIER", updatable = false, nullable = false)
-    private UUID id;
+    @Id
+@GeneratedValue(strategy = GenerationType.UUID)
+private UUID id;
 
     @Column(name = "code",        length = 50)  private String code;
     @Column(name = "name",        length = 100) private String name;
