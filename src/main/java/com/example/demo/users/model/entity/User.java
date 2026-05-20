@@ -24,10 +24,8 @@ import jakarta.persistence.Table;
 public class User {
 
     @Id
-    @GeneratedValue
-    @UuidGenerator
-    @Column(columnDefinition = "UNIQUEIDENTIFIER", updatable = false, nullable = false)
-    private UUID id;
+@GeneratedValue(strategy = GenerationType.UUID)
+private UUID id;
 
     @Column(name = "username", length = 50)
     private String username;
