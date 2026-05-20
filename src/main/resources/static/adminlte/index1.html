@@ -310,6 +310,7 @@ tbody tr:last-child td{border-bottom:none}
 .stat-card-l{font-size:.73rem;color:var(--text-muted);margin-top:2px}
 .stat-card-icon{font-size:22px;margin-bottom:6px}
 
+/* ── ROLE PERMISSION VISIBILITY ── */
 @media(max-width:768px){.sidebar{display:none}.tab-btn span{display:none}.detail-panel{width:100%}}
 </style>
 </head>
@@ -345,8 +346,6 @@ tbody tr:last-child td{border-bottom:none}
       <div class="quick-divider">hoặc đăng nhập nhanh</div>
       <div class="quick-btns">
         <button class="quick-btn" onclick="quickLogin('admin','123456')"><i class="bi bi-shield-fill"></i>Admin</button>
-        <button class="quick-btn" onclick="quickLogin('giaovu','123456')"><i class="bi bi-clipboard-fill"></i>Giáo vụ</button>
-        <button class="quick-btn" onclick="quickLogin('sinhvien','123456')"><i class="bi bi-person-fill"></i>Sinh viên</button>
       </div>
     </div>
     <div class="auth-form" id="form-register">
@@ -379,21 +378,24 @@ tbody tr:last-child td{border-bottom:none}
         <div class="nav-section-label">Tổng quan</div>
         <a href="#" class="nav-item" onclick="showTab('dashboard');setNavActive(this);return false;"><i class="bi bi-grid-1x2"></i> Dashboard</a>
       </div>
-      <div class="nav-section">
+      <div class="nav-section" id="nav-section-academic">
         <div class="nav-section-label">Cấu trúc đào tạo</div>
         <a href="#" class="nav-item active" id="nav-academic-years" onclick="showTab('academic-years');setNavActive(this);return false;"><i class="bi bi-calendar3"></i> Niên khóa</a>
         <a href="#" class="nav-item" id="nav-school-years" onclick="showTab('school-years');setNavActive(this);return false;"><i class="bi bi-calendar-range"></i> Khóa học</a>
         <a href="#" class="nav-item" id="nav-semesters" onclick="showTab('semesters');setNavActive(this);return false;"><i class="bi bi-calendar2-week"></i> Học kỳ</a>
       </div>
-      <div class="nav-section">
+      <div class="nav-section" id="nav-section-classes">
         <div class="nav-section-label">Quản lý lớp học</div>
         <a href="#" class="nav-item" id="nav-course-sections" onclick="showTab('course-sections');setNavActive(this);return false;"><i class="bi bi-book"></i> Lớp học phần</a>
         <a href="#" class="nav-item" id="nav-student-course-sections" onclick="showTab('student-course-sections');setNavActive(this);return false;"><i class="bi bi-person-badge"></i> Sinh viên lớp</a>
         <a href="#" class="nav-item" id="nav-lecturer-course-classes" onclick="showTab('lecturer-course-classes');setNavActive(this);return false;"><i class="bi bi-person-workspace"></i> Giảng viên lớp</a>
       </div>
-      <div class="nav-section">
+      <div class="nav-section" id="nav-section-system">
         <div class="nav-section-label">Hệ thống</div>
         <a href="#" class="nav-item" id="nav-users" onclick="showTab('users');setNavActive(this);return false;"><i class="bi bi-people"></i> Người dùng</a>
+        <a href="#" class="nav-item" id="nav-students" onclick="showTab('students');setNavActive(this);return false;"><i class="bi bi-mortarboard"></i> Sinh viên</a>
+        <a href="#" class="nav-item" id="nav-roles" onclick="showTab('roles');setNavActive(this);return false;"><i class="bi bi-shield-check"></i> Vai trò</a>
+        <a href="#" class="nav-item" id="nav-permissions" onclick="showTab('permissions');setNavActive(this);return false;"><i class="bi bi-key"></i> Quyền hạn</a>
       </div>
     </nav>
   </aside>
@@ -435,6 +437,9 @@ tbody tr:last-child td{border-bottom:none}
         <button class="tab-btn" data-tab="student-course-sections" onclick="showTab('student-course-sections')"><i class="bi bi-person-badge"></i><span>SV Lớp</span></button>
         <button class="tab-btn" data-tab="lecturer-course-classes" onclick="showTab('lecturer-course-classes')"><i class="bi bi-person-workspace"></i><span>GV Lớp</span></button>
         <button class="tab-btn" data-tab="users" onclick="showTab('users')"><i class="bi bi-people"></i><span>Users</span></button>
+        <button class="tab-btn" data-tab="students" onclick="showTab('students')"><i class="bi bi-mortarboard"></i><span>Sinh viên</span></button>
+        <button class="tab-btn" data-tab="roles" onclick="showTab('roles')"><i class="bi bi-shield-check"></i><span>Roles</span></button>
+        <button class="tab-btn" data-tab="permissions" onclick="showTab('permissions')"><i class="bi bi-key"></i><span>Quyền</span></button>
       </div>
 
       <!-- ══ 0. DASHBOARD ══ -->
@@ -445,6 +450,9 @@ tbody tr:last-child td{border-bottom:none}
           <div class="stat-card"><div class="stat-card-icon" style="color:var(--warning)"><i class="bi bi-calendar2-week"></i></div><div class="stat-card-n" id="stat-sm">—</div><div class="stat-card-l">Học kỳ</div></div>
           <div class="stat-card"><div class="stat-card-icon" style="color:var(--info)"><i class="bi bi-book"></i></div><div class="stat-card-n" id="stat-cs">—</div><div class="stat-card-l">Lớp học phần</div></div>
           <div class="stat-card"><div class="stat-card-icon" style="color:var(--success)"><i class="bi bi-people"></i></div><div class="stat-card-n" id="stat-usr">—</div><div class="stat-card-l">Người dùng</div></div>
+          <div class="stat-card"><div class="stat-card-icon" style="color:var(--purple)"><i class="bi bi-mortarboard"></i></div><div class="stat-card-n" id="stat-stu">—</div><div class="stat-card-l">Sinh viên</div></div>
+          <div class="stat-card"><div class="stat-card-icon" style="color:var(--danger)"><i class="bi bi-shield-check"></i></div><div class="stat-card-n" id="stat-rol">—</div><div class="stat-card-l">Vai trò</div></div>
+          <div class="stat-card"><div class="stat-card-icon" style="color:var(--warning)"><i class="bi bi-key"></i></div><div class="stat-card-n" id="stat-perm">—</div><div class="stat-card-l">Quyền hạn</div></div>
         </div>
         <div id="dashboard-tree" style="font-size:.85rem;color:var(--text-muted);text-align:center;padding:2rem">
           <div class="spinner"></div>
@@ -461,7 +469,7 @@ tbody tr:last-child td{border-bottom:none}
             </div>
             <div style="display:flex;gap:8px">
               <button class="btn btn-outline btn-sm" onclick="openModal('academic-years-seed')" title="Tạo dữ liệu mẫu K23 & K24"><i class="bi bi-magic"></i> Seed mẫu</button>
-              <button class="btn btn-primary btn-sm" onclick="openModal('academic-years')"><i class="bi bi-plus-lg"></i> Thêm mới</button>
+              <button class="btn btn-primary btn-sm" data-perm="create" onclick="openModal('academic-years')"><i class="bi bi-plus-lg"></i> Thêm mới</button>
             </div>
           </div>
           <div class="card-body">
@@ -493,7 +501,7 @@ tbody tr:last-child td{border-bottom:none}
               <div class="card-header-icon" style="background:var(--warning-bg)"><i class="bi bi-calendar2-week" style="color:var(--warning)"></i></div>
               <div><div class="card-title">Danh sách Học kỳ</div><div class="card-subtitle">Semesters — liên kết với Khóa học</div></div>
             </div>
-            <button class="btn btn-primary btn-sm" onclick="openModal('semesters')"><i class="bi bi-plus-lg"></i> Thêm mới</button>
+            <button class="btn btn-primary btn-sm" data-perm="create" onclick="openModal('semesters')"><i class="bi bi-plus-lg"></i> Thêm mới</button>
           </div>
           <div class="card-body">
             <div class="toolbar">
@@ -522,7 +530,7 @@ tbody tr:last-child td{border-bottom:none}
               <div class="card-header-icon" style="background:var(--info-bg)"><i class="bi bi-book" style="color:var(--info)"></i></div>
               <div><div class="card-title">Lớp học phần</div><div class="card-subtitle">Course Sections — thuộc về Học kỳ</div></div>
             </div>
-            <button class="btn btn-primary btn-sm" onclick="openModal('course-sections')"><i class="bi bi-plus-lg"></i> Thêm mới</button>
+            <button class="btn btn-primary btn-sm" data-perm="create" onclick="openModal('course-sections')"><i class="bi bi-plus-lg"></i> Thêm mới</button>
           </div>
           <div class="card-body">
             <div id="cs-breadcrumb" class="breadcrumb" style="display:none">
@@ -543,8 +551,8 @@ tbody tr:last-child td{border-bottom:none}
             </div>
             <div class="table-wrap">
               <table>
-                <thead><tr><th>Code</th><th>Học kỳ</th><th>Loại</th><th>Sĩ số</th><th>SV đã ĐK</th><th>GV phụ trách</th><th>Trạng thái</th><th>Thao tác</th></tr></thead>
-                <tbody id="tbody-course-sections"><tr><td colspan="9"><div class="loading-state"><div class="spinner"></div></div></td></tr></tbody>
+                <thead><tr><th>Code</th><th>Tên học phần</th><th>Học kỳ</th><th>Năm học</th><th>Loại</th><th>Min/Max SV</th><th>SV đã ĐK</th><th>GV phụ trách</th><th>Trạng thái</th><th>Thao tác</th></tr></thead>
+                <tbody id="tbody-course-sections"><tr><td colspan="10"><div class="loading-state"><div class="spinner"></div></div></td></tr></tbody>
               </table>
             </div>
           </div>
@@ -559,7 +567,7 @@ tbody tr:last-child td{border-bottom:none}
               <div class="card-header-icon" style="background:#f0fdf4"><i class="bi bi-person-badge" style="color:var(--success)"></i></div>
               <div><div class="card-title">Sinh viên trong lớp học phần</div><div class="card-subtitle">Student Course Sections</div></div>
             </div>
-            <button class="btn btn-primary btn-sm" onclick="openModal('student-course-sections')"><i class="bi bi-plus-lg"></i> Thêm mới</button>
+            <button class="btn btn-primary btn-sm" data-perm="create" onclick="openModal('student-course-sections')"><i class="bi bi-plus-lg"></i> Thêm mới</button>
           </div>
           <div class="card-body">
             <div id="scs-breadcrumb" class="breadcrumb" style="display:none">
@@ -596,7 +604,7 @@ tbody tr:last-child td{border-bottom:none}
               <div class="card-header-icon" style="background:#f1f5f9"><i class="bi bi-person-workspace" style="color:#334155"></i></div>
               <div><div class="card-title">Giảng viên dạy lớp</div><div class="card-subtitle">Lecturer Course Classes — phân công GV</div></div>
             </div>
-            <button class="btn btn-primary btn-sm" onclick="openModal('lecturer-course-classes')"><i class="bi bi-plus-lg"></i> Thêm mới</button>
+            <button class="btn btn-primary btn-sm" data-perm="create" onclick="openModal('lecturer-course-classes')"><i class="bi bi-plus-lg"></i> Thêm mới</button>
           </div>
           <div class="card-body">
             <div class="toolbar">
@@ -630,7 +638,7 @@ tbody tr:last-child td{border-bottom:none}
               <div class="card-header-icon"><i class="bi bi-people"></i></div>
               <div><div class="card-title">Danh sách Người dùng</div><div class="card-subtitle">Users Management</div></div>
             </div>
-            <button class="btn btn-primary btn-sm" onclick="openModal('users')"><i class="bi bi-plus-lg"></i> Thêm mới</button>
+            <button class="btn btn-primary btn-sm" data-perm="create" onclick="openModal('users')"><i class="bi bi-plus-lg"></i> Thêm mới</button>
           </div>
           <div class="card-body">
             <div class="toolbar">
@@ -641,6 +649,91 @@ tbody tr:last-child td{border-bottom:none}
               <table>
                 <thead><tr><th>Username</th><th>Email</th><th>Phone</th><th>Roles</th><th>Active</th><th>Ngày tạo</th><th>Thao tác</th></tr></thead>
                 <tbody id="tbody-users"><tr><td colspan="7"><div class="loading-state"><div class="spinner"></div></div></td></tr></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ 8. STUDENTS ══ -->
+      <div id="tab-students" class="tab-content">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-header-left">
+              <div class="card-header-icon" style="background:var(--purple-bg)"><i class="bi bi-mortarboard" style="color:var(--purple)"></i></div>
+              <div><div class="card-title">Danh sách Sinh viên</div><div class="card-subtitle">Students Management</div></div>
+            </div>
+            <button class="btn btn-primary btn-sm" data-perm="create" onclick="openModal('students')"><i class="bi bi-plus-lg"></i> Thêm mới</button>
+          </div>
+          <div class="card-body">
+            <div class="toolbar">
+              <div class="search-box" style="flex:1;max-width:300px"><i class="bi bi-search"></i><input type="text" id="search-students" placeholder="Tìm theo mã, họ tên..." oninput="searchLive('students',this.value)"></div>
+              <select class="filter-select" id="filter-stu-status" onchange="filterByStatus('students',this.value)">
+                <option value="">Tất cả trạng thái</option>
+                <option value="active">Đang học</option><option value="graduated">Đã tốt nghiệp</option><option value="suspended">Bảo lưu</option>
+              </select>
+              <button class="btn btn-success-outline btn-sm" onclick="filterActive('students')"><i class="bi bi-check-circle"></i> Active</button>
+              <button class="btn btn-outline btn-sm" onclick="loadData('students')"><i class="bi bi-arrow-clockwise"></i></button>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Mã SV</th><th>Họ tên</th><th>Giới tính</th><th>Địa chỉ</th><th>Trạng thái</th><th>Active</th><th>Ngày tạo</th><th>Thao tác</th></tr></thead>
+                <tbody id="tbody-students"><tr><td colspan="8"><div class="loading-state"><div class="spinner"></div></div></td></tr></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ 9. ROLES ══ -->
+      <div id="tab-roles" class="tab-content">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-header-left">
+              <div class="card-header-icon" style="background:var(--danger-bg)"><i class="bi bi-shield-check" style="color:var(--danger)"></i></div>
+              <div><div class="card-title">Danh sách Vai trò</div><div class="card-subtitle">Roles — gán Permissions cho từng vai trò</div></div>
+            </div>
+            <button class="btn btn-primary btn-sm" data-perm="create" onclick="openModal('roles')"><i class="bi bi-plus-lg"></i> Thêm mới</button>
+          </div>
+          <div class="card-body">
+            <div class="toolbar">
+              <div class="search-box" style="flex:1;max-width:280px"><i class="bi bi-search"></i><input type="text" id="search-roles" placeholder="Tìm vai trò..." oninput="searchLive('roles',this.value)"></div>
+              <button class="btn btn-success-outline btn-sm" onclick="filterActive('roles')"><i class="bi bi-check-circle"></i> Active</button>
+              <button class="btn btn-outline btn-sm" onclick="loadData('roles')"><i class="bi bi-arrow-clockwise"></i></button>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Code</th><th>Tên vai trò</th><th>Mô tả</th><th>Permissions</th><th>Hệ thống</th><th>Active</th><th>Thao tác</th></tr></thead>
+                <tbody id="tbody-roles"><tr><td colspan="7"><div class="loading-state"><div class="spinner"></div></div></td></tr></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ 10. PERMISSIONS ══ -->
+      <div id="tab-permissions" class="tab-content">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-header-left">
+              <div class="card-header-icon" style="background:var(--warning-bg)"><i class="bi bi-key" style="color:var(--warning)"></i></div>
+              <div><div class="card-title">Danh sách Quyền hạn</div><div class="card-subtitle">Permissions — phân quyền hệ thống</div></div>
+            </div>
+            <button class="btn btn-primary btn-sm" data-perm="create" onclick="openModal('permissions')"><i class="bi bi-plus-lg"></i> Thêm mới</button>
+          </div>
+          <div class="card-body">
+            <div class="toolbar">
+              <div class="search-box" style="flex:1;max-width:280px"><i class="bi bi-search"></i><input type="text" id="search-permissions" placeholder="Tìm quyền, module..." oninput="searchLive('permissions',this.value)"></div>
+              <select class="filter-select" id="filter-perm-module" onchange="filterPermByModule(this.value)">
+                <option value="">Tất cả module</option>
+              </select>
+              <button class="btn btn-success-outline btn-sm" onclick="filterActive('permissions')"><i class="bi bi-check-circle"></i> Active</button>
+              <button class="btn btn-outline btn-sm" onclick="loadData('permissions')"><i class="bi bi-arrow-clockwise"></i></button>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Code</th><th>Tên quyền</th><th>Module</th><th>Mô tả</th><th>Active</th><th>Thao tác</th></tr></thead>
+                <tbody id="tbody-permissions"><tr><td colspan="6"><div class="loading-state"><div class="spinner"></div></div></td></tr></tbody>
               </table>
             </div>
           </div>
@@ -762,6 +855,7 @@ tbody tr:last-child td{border-bottom:none}
       <input type="hidden" id="cs-id">
       <div class="field-group" style="grid-template-columns:1fr 1fr 1fr">
         <div class="field" style="grid-column:1/-1"><label>Code <span class="req">*</span></label><input type="text" id="cs-code" placeholder="CS001-HK1-2425"></div>
+        <div class="field" style="grid-column:1/-1"><label>Tên học phần</label><input type="text" id="cs-name" placeholder="Ví dụ: Lập trình Web, Cơ sở dữ liệu..."></div>
         <div class="field" style="grid-column:1/-1">
           <label>Học kỳ <span class="req">*</span></label>
           <select id="cs-semester-select" onchange="onSelectSemesterForCS(this.value)">
@@ -769,6 +863,7 @@ tbody tr:last-child td{border-bottom:none}
           </select>
         </div>
         <div class="field" style="grid-column:1/-1"><label>Semester ID (tự điền)</label><input type="text" id="cs-semester-id" placeholder="UUID học kỳ" readonly style="background:var(--surface-3)"></div>
+        <div class="field" style="grid-column:1/-1"><label>Năm học</label><input type="text" id="cs-academic-year" placeholder="Ví dụ: 2023-2024"></div>
         <div class="field"><label>Course ID (môn học)</label><input type="text" id="cs-course-id" placeholder="UUID môn học"></div>
         <div class="field"><label>Room ID</label><input type="text" id="cs-room-id" placeholder="UUID phòng"></div>
         <div class="field"><label>Building ID</label><input type="text" id="cs-building-id" placeholder="UUID tòa nhà"></div>
@@ -876,12 +971,105 @@ tbody tr:last-child td{border-bottom:none}
         <div class="field" style="grid-column:1/-1"><label>Email</label><input type="email" id="usr-email"></div>
         <div class="field"><label>Số điện thoại</label><input type="text" id="usr-phone"></div>
         <div class="field"><label>Avatar URL</label><input type="text" id="usr-avatar"></div>
+        <div class="field" style="grid-column:1/-1">
+          <label>Vai trò (Roles)</label>
+          <div id="usr-roles-checkboxes" style="display:flex;flex-wrap:wrap;gap:8px;padding:8px 11px;border:1.5px solid var(--border-strong);border-radius:8px;min-height:38px;background:var(--surface)">
+            <span style="font-size:.8rem;color:var(--text-muted)">Đang tải vai trò...</span>
+          </div>
+        </div>
         <div class="field" style="grid-column:1/-1"><div class="toggle-row"><span class="toggle-label">Đang hoạt động</span><label class="toggle-switch"><input type="checkbox" id="usr-active" checked><span class="toggle-slider"></span></label></div></div>
       </div>
     </div>
     <div class="modal-foot">
       <button class="btn btn-modal-cancel" onclick="closeModal('users')">Hủy</button>
       <button class="btn btn-primary" onclick="saveUser()"><i class="bi bi-check-lg"></i> Lưu</button>
+    </div>
+  </div>
+</div>
+
+<!-- Students Modal -->
+<div class="modal-overlay hidden" id="modal-students">
+  <div class="modal-box modal-lg">
+    <div class="modal-head">
+      <div class="modal-head-left"><div class="modal-head-badge" style="background:var(--purple-bg)"><i class="bi bi-mortarboard" style="color:var(--purple)"></i></div><span class="modal-title" id="modal-students-title">Thêm Sinh viên</span></div>
+      <button class="modal-close" onclick="closeModal('students')"><i class="bi bi-x-lg"></i></button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="stu-id">
+      <div class="field-group" style="grid-template-columns:1fr 1fr">
+        <div class="field"><label>Mã sinh viên <span class="req">*</span></label><input type="text" id="stu-code" placeholder="SV001"></div>
+        <div class="field"><label>Họ và tên <span class="req">*</span></label><input type="text" id="stu-fullname" placeholder="Nguyễn Văn A"></div>
+        <div class="field"><label>Giới tính</label><select id="stu-gender"><option value="">—</option><option value="Nam">Nam</option><option value="Nữ">Nữ</option></select></div>
+        <div class="field"><label>Ngày sinh</label><input type="datetime-local" id="stu-dob"></div>
+        <div class="field" style="grid-column:1/-1"><label>Địa chỉ thường trú</label><input type="text" id="stu-address" placeholder="Địa chỉ..."></div>
+        <div class="field" style="grid-column:1/-1"><label>Địa chỉ hiện tại</label><input type="text" id="stu-current-address" placeholder="Địa chỉ hiện tại..."></div>
+        <div class="field"><label>Trạng thái</label><select id="stu-status"><option value="active">Đang học</option><option value="graduated">Đã tốt nghiệp</option><option value="suspended">Bảo lưu</option></select></div>
+        <div class="field"><label>User ID (liên kết)</label>
+          <select id="stu-user-select" onchange="document.getElementById('stu-user-id').value=this.value">
+            <option value="">— Chọn tài khoản —</option>
+          </select>
+        </div>
+        <div class="field" style="grid-column:1/-1"><label>User ID</label><input type="text" id="stu-user-id" readonly style="background:var(--surface-3)"></div>
+        <div class="field" style="grid-column:1/-1"><div class="toggle-row"><span class="toggle-label">Đang hoạt động</span><label class="toggle-switch"><input type="checkbox" id="stu-active" checked><span class="toggle-slider"></span></label></div></div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-modal-cancel" onclick="closeModal('students')">Hủy</button>
+      <button class="btn btn-primary" onclick="saveData('students')"><i class="bi bi-check-lg"></i> Lưu</button>
+    </div>
+  </div>
+</div>
+
+<!-- Roles Modal -->
+<div class="modal-overlay hidden" id="modal-roles">
+  <div class="modal-box modal-lg">
+    <div class="modal-head">
+      <div class="modal-head-left"><div class="modal-head-badge" style="background:var(--danger-bg)"><i class="bi bi-shield-check" style="color:var(--danger)"></i></div><span class="modal-title" id="modal-roles-title">Thêm Vai trò</span></div>
+      <button class="modal-close" onclick="closeModal('roles')"><i class="bi bi-x-lg"></i></button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="rol-id">
+      <div class="field-group" style="grid-template-columns:1fr 1fr">
+        <div class="field"><label>Code <span class="req">*</span></label><input type="text" id="rol-code" placeholder="ADMIN, LECTURER..."></div>
+        <div class="field"><label>Tên vai trò <span class="req">*</span></label><input type="text" id="rol-name" placeholder="Quản trị viên"></div>
+        <div class="field" style="grid-column:1/-1"><label>Mô tả</label><textarea id="rol-description" placeholder="Mô tả vai trò..."></textarea></div>
+        <div class="field" style="grid-column:1/-1">
+          <label>Permissions (gán quyền)</label>
+          <div id="rol-permissions-checkboxes" style="display:flex;flex-wrap:wrap;gap:8px;padding:10px 12px;border:1.5px solid var(--border-strong);border-radius:8px;min-height:60px;max-height:200px;overflow-y:auto;background:var(--surface)">
+            <span style="font-size:.8rem;color:var(--text-muted)">Đang tải quyền hạn...</span>
+          </div>
+        </div>
+        <div class="field" style="grid-column:1/-1"><div class="toggle-row"><span class="toggle-label">Vai trò hệ thống</span><label class="toggle-switch"><input type="checkbox" id="rol-system"><span class="toggle-slider"></span></label></div></div>
+        <div class="field" style="grid-column:1/-1"><div class="toggle-row"><span class="toggle-label">Đang hoạt động</span><label class="toggle-switch"><input type="checkbox" id="rol-active" checked><span class="toggle-slider"></span></label></div></div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-modal-cancel" onclick="closeModal('roles')">Hủy</button>
+      <button class="btn btn-primary" onclick="saveRole()"><i class="bi bi-check-lg"></i> Lưu</button>
+    </div>
+  </div>
+</div>
+
+<!-- Permissions Modal -->
+<div class="modal-overlay hidden" id="modal-permissions">
+  <div class="modal-box">
+    <div class="modal-head">
+      <div class="modal-head-left"><div class="modal-head-badge" style="background:var(--warning-bg)"><i class="bi bi-key" style="color:var(--warning)"></i></div><span class="modal-title" id="modal-permissions-title">Thêm Quyền hạn</span></div>
+      <button class="modal-close" onclick="closeModal('permissions')"><i class="bi bi-x-lg"></i></button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="perm-id">
+      <div class="field-group" style="grid-template-columns:1fr 1fr">
+        <div class="field"><label>Code <span class="req">*</span></label><input type="text" id="perm-code" placeholder="USER_READ, COURSE_CREATE..."></div>
+        <div class="field"><label>Module</label><input type="text" id="perm-module" placeholder="users, courses..."></div>
+        <div class="field" style="grid-column:1/-1"><label>Tên quyền <span class="req">*</span></label><input type="text" id="perm-name" placeholder="Xem danh sách người dùng"></div>
+        <div class="field" style="grid-column:1/-1"><label>Mô tả</label><textarea id="perm-description" placeholder="Mô tả chi tiết quyền này..."></textarea></div>
+        <div class="field" style="grid-column:1/-1"><div class="toggle-row"><span class="toggle-label">Đang hoạt động</span><label class="toggle-switch"><input type="checkbox" id="perm-active" checked><span class="toggle-slider"></span></label></div></div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-modal-cancel" onclick="closeModal('permissions')">Hủy</button>
+      <button class="btn btn-primary" onclick="saveData('permissions')"><i class="bi bi-check-lg"></i> Lưu</button>
     </div>
   </div>
 </div>
@@ -895,13 +1083,15 @@ let currentUser = null;
 ══════════════════════════════════════════ */
 const CACHE = {
   'academic-years': [],
-  'school-years': [],   // real SchoolYear records from server
+  'school-years': [],
   'semesters': [],
   'course-sections': [],
   'student-course-sections': [],
   'lecturer-course-classes': [],
   'users': [],
-  // generated school years: { ayId -> [SchoolYear] } (for tab display)
+  'students': [],
+  'roles': [],
+  'permissions': [],
   schoolYears: {}
 };
 
@@ -984,6 +1174,8 @@ function syOwnerBadges(syName) {
 function findCSById(id) { return (CACHE['course-sections'] || []).find(r => r.id === id); }
 function findSMById(id) { return (CACHE['semesters'] || []).find(r => r.id === id); }
 function findUserById(id) { return (CACHE['users'] || []).find(r => r.id === id); }
+function findStudentById(id) { return (CACHE['students'] || []).find(r => r.id === id); }
+function findRoleById(id) { return (CACHE['roles'] || []).find(r => r.id === id); }
 function findSYById(id) {
   if (!id) return null;
   // 1. Look in real server school-years first
@@ -1061,8 +1253,14 @@ function getSemesterLabel(sm) {
 }
 
 function getUserLabel(id) {
+  if (!id) return '—';
+  // Check users first
   const u = findUserById(id);
-  return u ? u.username : (id ? id.substring(0,8)+'…' : '—');
+  if (u) return u.username || u.fullName || id.substring(0,8)+'…';
+  // Also check students (student_id may reference students table)
+  const st = findStudentById(id);
+  if (st) return (st.code ? st.code+' – ' : '') + (st.fullname || st.full_name || id.substring(0,8)+'…');
+  return id.substring(0,8)+'…';
 }
 
 function getCSLabel(id) {
@@ -1120,6 +1318,10 @@ async function doLogin() {
     loginSuccess(found);
   } catch(err) { errEl.textContent=err.message;errEl.classList.add('show'); }
 }
+/* ══════════════════════════════════════════
+   ROLE PERMISSION CONFIG
+══════════════════════════════════════════ */
+
 function loginSuccess(user) {
   currentUser = user;
   if (document.getElementById('remember-me').checked)
@@ -1179,7 +1381,6 @@ document.addEventListener('click',e=>{if(!e.target.closest('.dropdown'))document
    LOAD ALL DATA
 ══════════════════════════════════════════ */
 async function loadAllData() {
-  // Load academic-years and school-years first (semesters depend on them)
   await Promise.all([
     loadData('academic-years'),
     loadSchoolYears(),
@@ -1190,8 +1391,10 @@ async function loadAllData() {
     loadData('student-course-sections'),
     loadData('lecturer-course-classes'),
     loadData('users'),
+    loadData('students'),
+    loadData('roles'),
+    loadData('permissions'),
   ]);
-  // after all loaded, refresh dropdowns and school years tab
   refreshAllDropdowns();
   renderSchoolYearsTab();
   renderDashboard();
@@ -1270,7 +1473,9 @@ const MODULES = {
       const svCnt = countSCSForCS(r.id);
       const gvCnt = countLCCForCS(r.id);
       return `<td><span class="mono strong">${r.code||''}</span></td>
+      <td><span style="font-size:.85rem;font-weight:600;color:var(--navy)">${r.name||'<span style="color:var(--text-muted);font-weight:400">—</span>'}</span></td>
       <td>${sm ? `<span style="font-size:.8rem;color:var(--text-secondary)">${sm.name}</span>` : `<span class="mono" style="font-size:.74rem">${(r.semesterId||'').substring(0,8)}…</span>`}</td>
+      <td>${r.academicYear||r.academic_year ? `<span style="font-size:.82rem;color:var(--text-secondary)">${r.academicYear||r.academic_year}</span>` : '<span style="color:var(--text-muted)">—</span>'}</td>
       <td><span class="badge" style="background:var(--surface-3);color:var(--text-secondary)">${r.classType||'—'}</span></td>
       <td><span style="font-size:.82rem">${r.minStudents||0}/${r.maxStudents||0}</span></td>
       <td>
@@ -1291,14 +1496,14 @@ const MODULES = {
       </td>`;
     },
     fillModal: (r) => {
-      setVals({'cs-id':r.id,'cs-code':r.code,'cs-course-id':r.courseId,'cs-semester-id':r.semesterId||r.semester_id,'cs-room-id':r.roomId,'cs-building-id':r.buildingId,'cs-min-students':r.minStudents,'cs-max-students':r.maxStudents,'cs-class-type':r.classType,'cs-note':r.note,'cs-reg-start':r.registrationStart?r.registrationStart.substring(0,16):'','cs-reg-end':r.registrationEnd?r.registrationEnd.substring(0,16):''});
+      setVals({'cs-id':r.id,'cs-code':r.code,'cs-name':r.name,'cs-academic-year':r.academicYear||r.academic_year||'','cs-course-id':r.courseId,'cs-semester-id':r.semesterId||r.semester_id,'cs-room-id':r.roomId,'cs-building-id':r.buildingId,'cs-min-students':r.minStudents,'cs-max-students':r.maxStudents,'cs-class-type':r.classType,'cs-note':r.note,'cs-reg-start':r.registrationStart?r.registrationStart.substring(0,16):'','cs-reg-end':r.registrationEnd?r.registrationEnd.substring(0,16):''});
       document.getElementById('cs-status').value=r.status||'open';
       document.getElementById('cs-active').checked=r.isActive!==false;
       const sel=document.getElementById('cs-semester-select');
       if(sel) sel.value=r.semesterId||r.semester_id||'';
     },
-    getPayload: () => ({code:g('cs-code'),courseId:g('cs-course-id')||null,semesterId:g('cs-semester-id')||null,roomId:g('cs-room-id')||null,buildingId:g('cs-building-id')||null,minStudents:parseInt(g('cs-min-students'))||null,maxStudents:parseInt(g('cs-max-students'))||null,classType:g('cs-class-type'),status:document.getElementById('cs-status').value,registrationStart:g('cs-reg-start')||null,registrationEnd:g('cs-reg-end')||null,note:g('cs-note'),isActive:document.getElementById('cs-active').checked,updatedAt:now()}),
-    resetModal: () => { clearVals(['cs-id','cs-code','cs-course-id','cs-semester-id','cs-room-id','cs-building-id','cs-min-students','cs-max-students','cs-class-type','cs-reg-start','cs-reg-end','cs-note']); document.getElementById('cs-status').value='open'; document.getElementById('cs-active').checked=true; document.getElementById('cs-semester-select').value=''; }
+    getPayload: () => ({code:g('cs-code'),name:g('cs-name'),academicYear:g('cs-academic-year')||null,courseId:g('cs-course-id')||null,semesterId:g('cs-semester-id')||null,roomId:g('cs-room-id')||null,buildingId:g('cs-building-id')||null,minStudents:parseInt(g('cs-min-students'))||null,maxStudents:parseInt(g('cs-max-students'))||null,classType:g('cs-class-type'),status:document.getElementById('cs-status').value,registrationStart:g('cs-reg-start')||null,registrationEnd:g('cs-reg-end')||null,note:g('cs-note'),isActive:document.getElementById('cs-active').checked,updatedAt:now()}),
+    resetModal: () => { clearVals(['cs-id','cs-code','cs-name','cs-academic-year','cs-course-id','cs-semester-id','cs-room-id','cs-building-id','cs-min-students','cs-max-students','cs-class-type','cs-reg-start','cs-reg-end','cs-note']); document.getElementById('cs-status').value='open'; document.getElementById('cs-active').checked=true; document.getElementById('cs-semester-select').value=''; }
   },
   'student-course-sections': {
     endpoint: '/student-course-sections', title: 'Đăng ký học phần', prefix: 'scs',
@@ -1376,13 +1581,100 @@ const MODULES = {
       <td>${badgeActive(r.isActive)}</td>
       <td class="mono">${(r.createdAt||'').substring(0,10)}</td>
       <td>
-        <button class="action-btn edit" title="Sửa" onclick='editRecord("users",${JSON.stringify(r)})'><i class="bi bi-pencil-fill"></i></button>
+        <button class="action-btn edit" title="Sửa" onclick='editRecord("users",{id:"${r.id}"})'><i class="bi bi-pencil-fill"></i></button>
         <button class="action-btn del" title="Xóa" onclick="deleteRecord('users','${r.id}')"><i class="bi bi-trash-fill"></i></button>
       </td>`;
     },
-    fillModal: (r) => { setVals({'usr-id':r.id,'usr-username':r.username,'usr-email':r.email,'usr-phone':r.phone,'usr-avatar':r.avatarUrl}); document.getElementById('usr-password').value=''; document.getElementById('usr-active').checked=r.isActive!==false; },
+    fillModal: (r) => {
+      setVals({'usr-id':r.id,'usr-username':r.username,'usr-email':r.email,'usr-phone':r.phone,'usr-avatar':r.avatarUrl});
+      document.getElementById('usr-password').value='';
+      document.getElementById('usr-active').checked=r.isActive!==false;
+      // Set role checkboxes
+      const assignedIds = new Set((r.roles||[]).map(ro=>ro.id));
+      document.querySelectorAll('#usr-roles-checkboxes input[type=checkbox]').forEach(cb=>{
+        cb.checked = assignedIds.has(cb.value);
+      });
+    },
     getPayload: () => ({username:g('usr-username'),password:g('usr-password'),email:g('usr-email'),phone:g('usr-phone'),avatarUrl:g('usr-avatar'),isActive:document.getElementById('usr-active').checked,updatedAt:now()}),
-    resetModal: () => { clearVals(['usr-id','usr-username','usr-password','usr-email','usr-phone','usr-avatar']); document.getElementById('usr-active').checked=true; }
+    resetModal: () => {
+      clearVals(['usr-id','usr-username','usr-password','usr-email','usr-phone','usr-avatar']);
+      document.getElementById('usr-active').checked=true;
+      document.querySelectorAll('#usr-roles-checkboxes input[type=checkbox]').forEach(cb=>cb.checked=false);
+    }
+  },
+  'students': {
+    endpoint: '/students', title: 'Sinh viên', prefix: 'stu',
+    getRow: (r) => {
+      return `<td><span class="mono strong">${r.code||'—'}</span></td>
+      <td>${r.fullname||r.full_name||'—'}</td>
+      <td>${r.gender||'—'}</td>
+      <td style="max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:.8rem">${r.address||'—'}</td>
+      <td>${badgeStatus(r.status||'active')}</td>
+      <td>${badgeActive(r.isActive)}</td>
+      <td class="mono">${(r.createdAt||'').substring(0,10)||'—'}</td>
+      <td>
+        <button class="action-btn edit" title="Sửa" onclick='editRecord("students",${JSON.stringify(r)})'><i class="bi bi-pencil-fill"></i></button>
+        <button class="action-btn del" title="Xóa" onclick="deleteRecord('students','${r.id}')"><i class="bi bi-trash-fill"></i></button>
+      </td>`;
+    },
+    fillModal: (r) => {
+      setVals({'stu-id':r.id,'stu-code':r.code,'stu-fullname':r.fullname||r.full_name,'stu-address':r.address,'stu-current-address':r.current_address,'stu-user-id':r.user_id||(r.userId||'')});
+      document.getElementById('stu-gender').value=r.gender||'';
+      document.getElementById('stu-status').value=r.status||'active';
+      document.getElementById('stu-active').checked=r.isActive!==false;
+      const sel=document.getElementById('stu-user-select');
+      if(sel) sel.value=r.user_id||r.userId||'';
+    },
+    getPayload: () => { const uid = g('stu-user-id') || document.getElementById('stu-user-select')?.value || null; return {code:g('stu-code'),fullname:g('stu-fullname'),gender:document.getElementById('stu-gender').value,address:g('stu-address'),current_address:g('stu-current-address'),user_id:uid||null,status:document.getElementById('stu-status').value,isActive:document.getElementById('stu-active').checked,updatedAt:now()}; },
+    resetModal: () => { clearVals(['stu-id','stu-code','stu-fullname','stu-address','stu-current-address','stu-user-id']); document.getElementById('stu-gender').value=''; document.getElementById('stu-status').value='active'; document.getElementById('stu-active').checked=true; const sel=document.getElementById('stu-user-select');if(sel)sel.value=''; }
+  },
+  'roles': {
+    endpoint: '/roles', title: 'Vai trò', prefix: 'rol',
+    getRow: (r) => {
+      const perms=(r.permissions||[]).map(p=>`<span class="badge" style="background:var(--surface-3);color:var(--text-secondary);font-size:.7rem">${p.code||p.name||''}</span>`).join(' ');
+      return `<td><span class="mono strong">${r.code||''}</span></td>
+      <td><span style="font-weight:600">${r.name||''}</span></td>
+      <td style="font-size:.82rem;color:var(--text-muted)">${r.description||''}</td>
+      <td style="max-width:180px">${perms||'<span style="color:var(--text-muted);font-size:.78rem">—</span>'}</td>
+      <td>${r.isSystem?'<span class="badge badge-main">Hệ thống</span>':'—'}</td>
+      <td>${badgeActive(r.isActive)}</td>
+      <td>
+        <button class="action-btn view" title="Xem chi tiết" onclick="viewRoleDetail('${r.id}')"><i class="bi bi-eye-fill"></i></button>
+        <button class="action-btn edit" title="Sửa" onclick='editRecord("roles",{id:"${r.id}"})'><i class="bi bi-pencil-fill"></i></button>
+        <button class="action-btn del" title="Xóa" onclick="deleteRecord('roles','${r.id}')"><i class="bi bi-trash-fill"></i></button>
+      </td>`;
+    },
+    fillModal: (r) => {
+      setVals({'rol-id':r.id,'rol-code':r.code,'rol-name':r.name,'rol-description':r.description});
+      document.getElementById('rol-system').checked=r.isSystem===true;
+      document.getElementById('rol-active').checked=r.isActive!==false;
+      const assignedIds = new Set((r.permissions||[]).map(p=>p.id));
+      document.querySelectorAll('#rol-permissions-checkboxes input[type=checkbox]').forEach(cb=>{
+        cb.checked = assignedIds.has(cb.value);
+      });
+    },
+    getPayload: () => {
+      const permIds=[...document.querySelectorAll('#rol-permissions-checkboxes input[type=checkbox]:checked')].map(cb=>cb.value);
+      return {code:g('rol-code'),name:g('rol-name'),description:g('rol-description'),isSystem:document.getElementById('rol-system').checked,isActive:document.getElementById('rol-active').checked,permissionIds:permIds,updatedAt:now()};
+    },
+    resetModal: () => { clearVals(['rol-id','rol-code','rol-name','rol-description']); document.getElementById('rol-system').checked=false; document.getElementById('rol-active').checked=true; document.querySelectorAll('#rol-permissions-checkboxes input[type=checkbox]').forEach(cb=>cb.checked=false); }
+  },
+  'permissions': {
+    endpoint: '/permissions', title: 'Quyền hạn', prefix: 'perm',
+    getRow: (r) => {
+      return `<td><span class="mono strong" style="font-size:.78rem">${r.code||''}</span></td>
+      <td>${r.name||''}</td>
+      <td><span class="badge" style="background:var(--info-bg);color:var(--info);border-radius:6px">${r.module||'—'}</span></td>
+      <td style="font-size:.82rem;color:var(--text-muted)">${r.description||''}</td>
+      <td>${badgeActive(r.isActive)}</td>
+      <td>
+        <button class="action-btn edit" title="Sửa" onclick='editRecord("permissions",${JSON.stringify(r)})'><i class="bi bi-pencil-fill"></i></button>
+        <button class="action-btn del" title="Xóa" onclick="deleteRecord('permissions','${r.id}')"><i class="bi bi-trash-fill"></i></button>
+      </td>`;
+    },
+    fillModal: (r) => { setVals({'perm-id':r.id,'perm-code':r.code,'perm-name':r.name,'perm-module':r.module,'perm-description':r.description}); document.getElementById('perm-active').checked=r.isActive!==false; },
+    getPayload: () => ({code:g('perm-code'),name:g('perm-name'),module:g('perm-module'),description:g('perm-description'),isActive:document.getElementById('perm-active').checked,updatedAt:now()}),
+    resetModal: () => { clearVals(['perm-id','perm-code','perm-name','perm-module','perm-description']); document.getElementById('perm-active').checked=true; }
   }
 };
 
@@ -1407,7 +1699,7 @@ function showTab(name){
   document.querySelectorAll('.tab-btn').forEach(el=>el.classList.toggle('active',el.dataset.tab===name));
   const el=document.getElementById('tab-'+name);
   if(el) el.classList.add('active');
-  const titles={'dashboard':'Dashboard','academic-years':'Niên khóa','school-years':'Khóa học','semesters':'Học kỳ','course-sections':'Lớp học phần','student-course-sections':'Sinh viên trong lớp','lecturer-course-classes':'Giảng viên dạy lớp','users':'Người dùng'};
+  const titles={'dashboard':'Dashboard','academic-years':'Niên khóa','school-years':'Khóa học','semesters':'Học kỳ','course-sections':'Lớp học phần','student-course-sections':'Sinh viên trong lớp','lecturer-course-classes':'Giảng viên dạy lớp','users':'Người dùng','students':'Sinh viên','roles':'Vai trò','permissions':'Quyền hạn'};
   document.getElementById('page-title').textContent=titles[name]||name;
   if(name==='school-years') renderSchoolYearsTab();
   if(name==='dashboard') renderDashboard();
@@ -1611,12 +1903,20 @@ function refreshAllDropdowns() {
     smSY.value=cur;
   }
 
-  // Student select for SCS modal
+  // Student select for SCS modal — use STUDENTS table not users
   const scsStud = document.getElementById('scs-student-select');
   if(scsStud) {
     const cur=scsStud.value;
     scsStud.innerHTML='<option value="">— Chọn sinh viên —</option>';
-    (CACHE['users']||[]).forEach(u=>{scsStud.innerHTML+=`<option value="${u.id}">${u.username}${u.email?' – '+u.email:''}</option>`;});
+    if((CACHE['students']||[]).length > 0) {
+      (CACHE['students']||[]).forEach(st=>{
+        const label = (st.code?st.code+' – ':'') + (st.fullname||st.full_name||st.id);
+        scsStud.innerHTML+=`<option value="${st.id}">${label}</option>`;
+      });
+    } else {
+      // Fallback to users if no students loaded
+      (CACHE['users']||[]).forEach(u=>{scsStud.innerHTML+=`<option value="${u.id}">${u.username}${u.email?' – '+u.email:''}</option>`;});
+    }
     scsStud.value=cur;
   }
 
@@ -1664,6 +1964,56 @@ function refreshAllDropdowns() {
     (CACHE['course-sections']||[]).forEach(cs=>{lccCSFilter.innerHTML+=`<option value="${cs.id}">${cs.code}${cs.name?' – '+cs.name:''}</option>`;});
     lccCSFilter.value=cur;
   }
+
+  // User select for Students modal
+  const stuUserSel = document.getElementById('stu-user-select');
+  if(stuUserSel) {
+    const cur=stuUserSel.value;
+    stuUserSel.innerHTML='<option value="">— Chọn tài khoản —</option>';
+    (CACHE['users']||[]).forEach(u=>{stuUserSel.innerHTML+=`<option value="${u.id}">${u.username}${u.email?' – '+u.email:''}</option>`;});
+    stuUserSel.value=cur;
+  }
+
+  // Permissions checkboxes for Roles modal
+  const rolPermsBox = document.getElementById('rol-permissions-checkboxes');
+  if(rolPermsBox && (CACHE['permissions']||[]).length > 0) {
+    const checkedIds = new Set([...rolPermsBox.querySelectorAll('input:checked')].map(i=>i.value));
+    rolPermsBox.innerHTML='';
+    const byModule = {};
+    (CACHE['permissions']||[]).forEach(p=>{const m=p.module||'other';if(!byModule[m])byModule[m]=[];byModule[m].push(p);});
+    Object.entries(byModule).forEach(([mod,perms])=>{
+      rolPermsBox.innerHTML+=`<div style="width:100%;font-size:.7rem;font-weight:700;text-transform:uppercase;color:var(--text-muted);margin-top:6px;padding-top:4px;border-top:1px solid var(--border)">${mod}</div>`;
+      perms.forEach(p=>{
+        const checked = checkedIds.has(p.id) ? 'checked' : '';
+        rolPermsBox.innerHTML+=`<label style="display:inline-flex;align-items:center;gap:5px;padding:3px 8px;border-radius:6px;background:var(--surface-2);border:1px solid var(--border);cursor:pointer;font-size:.78rem"><input type="checkbox" value="${p.id}" ${checked}> ${p.name||p.code}</label>`;
+      });
+    });
+  } else if(rolPermsBox && (CACHE['permissions']||[]).length === 0) {
+    rolPermsBox.innerHTML='<span style="font-size:.8rem;color:var(--text-muted)">Chưa có quyền hạn nào. Hãy tạo Permissions trước.</span>';
+  }
+
+  // Roles checkboxes for Users modal
+  const usrRolesBox = document.getElementById('usr-roles-checkboxes');
+  if(usrRolesBox && (CACHE['roles']||[]).length > 0) {
+    const checkedIds = new Set([...usrRolesBox.querySelectorAll('input:checked')].map(i=>i.value));
+    usrRolesBox.innerHTML='';
+    (CACHE['roles']||[]).forEach(r=>{
+      const checked = checkedIds.has(r.id) ? 'checked' : '';
+      usrRolesBox.innerHTML+=`<label style="display:inline-flex;align-items:center;gap:5px;padding:3px 8px;border-radius:6px;background:var(--surface-2);border:1px solid var(--border);cursor:pointer;font-size:.78rem"><input type="checkbox" value="${r.id}" ${checked}> ${r.name||r.code}</label>`;
+    });
+  } else if(usrRolesBox && (CACHE['roles']||[]).length === 0) {
+    usrRolesBox.innerHTML='<span style="font-size:.8rem;color:var(--text-muted)">Chưa có vai trò nào. Hãy tạo Roles trước.</span>';
+  }
+
+  // Permission module filter on permissions tab
+  const permModFilter = document.getElementById('filter-perm-module');
+  if(permModFilter) {
+    const cur=permModFilter.value;
+    permModFilter.innerHTML='<option value="">Tất cả module</option>';
+    const modules=[...new Set((CACHE['permissions']||[]).map(p=>p.module).filter(Boolean))];
+    modules.forEach(m=>permModFilter.innerHTML+=`<option value="${m}">${m}</option>`);
+    permModFilter.value=cur;
+  }
 }
 
 /* When school year selected in semester modal → auto-fill dates */
@@ -1677,6 +2027,7 @@ function onSelectSchoolYear(syId) {
 function onSelectSemesterForCS(smId) {
   document.getElementById('cs-semester-id').value = smId;
 }
+
 
 /* ══════════════════════════════════════════
    SCHOOL YEARS TAB RENDER
@@ -1706,7 +2057,7 @@ async function renderSchoolYearsTab() {
       </div>
       <div style="display:flex;gap:8px">
         <button class="btn btn-outline btn-sm" onclick="renderSchoolYearsTab()"><i class="bi bi-arrow-clockwise"></i> Tải lại</button>
-        <button class="btn btn-primary btn-sm" onclick="openModal('semesters')"><i class="bi bi-plus-lg"></i> Thêm học kỳ</button>
+        <button class="btn btn-primary btn-sm" data-perm="create" onclick="openModal('semesters')"><i class="bi bi-plus-lg"></i> Thêm học kỳ</button>
       </div>
     </div>
    `;
@@ -1885,10 +2236,13 @@ function viewCSDetail(csId) {
       <div class="detail-section-title">Sinh viên đăng ký (${students.length})</div>`;
   if(students.length) {
     students.forEach(scs=>{
-      const u=findUserById(scs.studentId||scs.student_id);
+      const stId=scs.studentId||scs.student_id;
+      const u=findUserById(stId);
+      const st=u?null:findStudentById(stId);
+      const displayName=u?(u.username||u.fullName||'?'):st?((st.code?st.code+' – ':'')+( st.fullname||st.full_name||'?')):'—';
       html+=`<div class="student-item">
-        <div class="student-avatar-sm"><span>${(u?u.username:'?').charAt(0).toUpperCase()}</span></div>
-        <div style="flex:1"><div style="font-size:.84rem;font-weight:600">${u?u.username:'—'}</div></div>
+        <div class="student-avatar-sm"><span>${displayName.charAt(0).toUpperCase()}</span></div>
+        <div style="flex:1"><div style="font-size:.84rem;font-weight:600">${displayName}</div></div>
         ${badgeScsStatus(scs.status)}
       </div>`;
     });
@@ -1908,6 +2262,12 @@ function updateDashboardStats() {
   document.getElementById('stat-sm').textContent = (CACHE['semesters']||[]).length;
   document.getElementById('stat-cs').textContent = (CACHE['course-sections']||[]).length;
   document.getElementById('stat-usr').textContent = (CACHE['users']||[]).length;
+  const stuEl = document.getElementById('stat-stu');
+  if(stuEl) stuEl.textContent = (CACHE['students']||[]).length;
+  const rolEl = document.getElementById('stat-rol');
+  if(rolEl) rolEl.textContent = (CACHE['roles']||[]).length;
+  const permEl = document.getElementById('stat-perm');
+  if(permEl) permEl.textContent = (CACHE['permissions']||[]).length;
 }
 
 function renderDashboard() {
@@ -1971,7 +2331,14 @@ function openModal(module) {
   refreshAllDropdowns();
 }
 function closeModal(module){document.getElementById('modal-'+module).classList.add('hidden');}
-function editRecord(module, record) {
+async function editRecord(module, record) {
+  // Với roles và users: fetch fresh data từ server để có permissions/roles mới nhất
+  if ((module === 'roles' || module === 'users') && record.id) {
+    try {
+      const res = await fetch(`${BASE}/${module}/${record.id}`);
+      if (res.ok) record = await res.json();
+    } catch(e) { /* fallback dùng cache */ }
+  }
   MODULES[module].fillModal(record);
   const titleEl=document.getElementById('modal-'+module+'-title');
   if(titleEl) titleEl.textContent='Sửa '+MODULES[module].title;
@@ -2018,23 +2385,170 @@ async function deleteRecord(module, id) {
   } catch(err){toast('Lỗi xóa: '+err.message,'error');}
 }
 
+function filterPermByModule(module) {
+  if(!module){renderTable('permissions',CACHE['permissions']||[]);return;}
+  const filtered=(CACHE['permissions']||[]).filter(p=>p.module===module);
+  renderTable('permissions',filtered);
+}
+
+function viewRoleDetail(roleId) {
+  const role = (CACHE['roles']||[]).find(r=>r.id===roleId);
+  if(!role) return;
+  const perms = role.permissions||[];
+  let html=`
+    <div class="detail-section">
+      <div class="detail-section-title">Thông tin vai trò</div>
+      <div class="detail-row"><span class="detail-label">Code</span><span class="detail-value">${role.code||'—'}</span></div>
+      <div class="detail-row"><span class="detail-label">Tên</span><span class="detail-value">${role.name||'—'}</span></div>
+      <div class="detail-row"><span class="detail-label">Mô tả</span><span class="detail-value" style="text-align:right">${role.description||'—'}</span></div>
+      <div class="detail-row"><span class="detail-label">Hệ thống</span><span>${role.isSystem?'<span class="badge badge-main">Có</span>':'—'}</span></div>
+      <div class="detail-row"><span class="detail-label">Trạng thái</span><span>${badgeActive(role.isActive)}</span></div>
+    </div>
+    <div class="detail-section">
+      <div class="detail-section-title">Quyền hạn (${perms.length})</div>`;
+  if(perms.length) {
+    const byModule={};
+    perms.forEach(p=>{const m=p.module||'other';if(!byModule[m])byModule[m]=[];byModule[m].push(p);});
+    Object.entries(byModule).forEach(([mod,ps])=>{
+      html+=`<div style="font-size:.7rem;font-weight:700;text-transform:uppercase;color:var(--text-muted);margin:8px 0 4px">${mod}</div>`;
+      ps.forEach(p=>{html+=`<div style="padding:4px 0;font-size:.82rem;display:flex;align-items:center;gap:6px"><i class="bi bi-key" style="color:var(--warning);font-size:.75rem"></i>${p.name||p.code}</div>`;});
+    });
+  } else {
+    html+='<div style="font-size:.82rem;color:var(--text-muted)">Chưa gán quyền hạn nào</div>';
+  }
+  html+='</div>';
+  // Users with this role
+  const usersWithRole=(CACHE['users']||[]).filter(u=>(u.roles||[]).some(r=>r.id===roleId));
+  html+=`<div class="detail-section"><div class="detail-section-title">Người dùng có vai trò này (${usersWithRole.length})</div>`;
+  if(usersWithRole.length) {
+    usersWithRole.forEach(u=>{html+=`<div class="student-item"><div class="student-avatar-sm"><span>${(u.username||'?').charAt(0).toUpperCase()}</span></div><div style="flex:1"><div style="font-size:.84rem;font-weight:600">${u.username}</div><div style="font-size:.74rem;color:var(--text-muted)">${u.email||''}</div></div></div>`;});
+  } else {
+    html+='<div style="font-size:.82rem;color:var(--text-muted)">Chưa có người dùng nào</div>';
+  }
+  html+='</div>';
+  openDetailPanel(`Vai trò: ${role.name||role.code}`, html);
+}
+
 async function saveUser() {
-  const id=g('usr-id');
-  const payload=MODULES['users'].getPayload();
-  if(!payload.username){toast('Tên đăng nhập không được trống.','error');return;}
-  if(!id&&!payload.password){toast('Mật khẩu không được trống khi tạo mới.','error');return;}
+  const id = g('usr-id');
+  const payload = MODULES['users'].getPayload();
+  if (!payload.username) { toast('Tên đăng nhập không được trống.', 'error'); return; }
+  if (!id && !payload.password) { toast('Mật khẩu không được trống khi tạo mới.', 'error'); return; }
+
+  // Collect selected role IDs
+  const roleIds = [...document.querySelectorAll('#usr-roles-checkboxes input[type=checkbox]:checked')].map(cb => cb.value);
+
   try {
-    const p=new URLSearchParams({username:payload.username,password:payload.password,email:payload.email,phone:payload.phone||'',avatarUrl:payload.avatarUrl||''});
-    const res=await fetch(`${BASE}/users?${p}`,{method:'POST'});
-    if(!res.ok) throw new Error(`HTTP ${res.status}: ${await res.text()}`);
+    let saved;
+    if (id) {
+      // ── CẬP NHẬT user ──
+      const p = new URLSearchParams();
+      if (payload.username)  p.append('username',  payload.username);
+      if (payload.password)  p.append('password',  payload.password);
+      if (payload.email)     p.append('email',     payload.email);
+      if (payload.phone)     p.append('phone',     payload.phone);
+      if (payload.avatarUrl) p.append('avatarUrl', payload.avatarUrl);
+      p.append('isActive', payload.isActive);
+      const res = await fetch(`${BASE}/users/${id}?${p}`, { method: 'PUT' });
+      if (!res.ok) throw new Error(`HTTP ${res.status}: ${await res.text()}`);
+      saved = await res.json();
+    } else {
+      // ── TẠO MỚI user ──
+      const p = new URLSearchParams({
+        username: payload.username,
+        password: payload.password,
+        email: payload.email || '',
+        phone: payload.phone || '',
+        avatarUrl: payload.avatarUrl || ''
+      });
+      const res = await fetch(`${BASE}/users?${p}`, { method: 'POST' });
+      if (!res.ok) throw new Error(`HTTP ${res.status}: ${await res.text()}`);
+      saved = await res.json();
+    }
+
+    // ── GÁN ROLES (thay thế toàn bộ) ──
+    if (saved && saved.id) {
+      try {
+        await fetch(`${BASE}/users/${saved.id}/roles`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(roleIds)
+        });
+      } catch(e) { toast('Lưu role thất bại: ' + e.message, 'error'); }
+    }
+
     closeModal('users');
-    toast((id?'Cập nhật':'Thêm')+' người dùng thành công!','success');
+    toast((id ? 'Cập nhật' : 'Thêm') + ' người dùng thành công!', 'success');
     await loadData('users');
     refreshAllDropdowns();
-  } catch(err){toast('Lỗi: '+err.message,'error');}
+  } catch(err) { toast('Lỗi: ' + err.message, 'error'); }
 }
 
 /* SEED K23 + K24 */
+
+async function saveRole() {
+  const id = g('rol-id');
+  const payload = MODULES['roles'].getPayload();
+  if (!payload.code) { toast('Mã vai trò không được trống.', 'error'); return; }
+  if (!payload.name) { toast('Tên vai trò không được trống.', 'error'); return; }
+
+  const permIds = payload.permissionIds || [];
+
+  try {
+    let saved;
+    if (id) {
+      // ── CẬP NHẬT role ──
+      const body = {
+        code: payload.code,
+        name: payload.name,
+        description: payload.description || '',
+        isSystem: payload.isSystem,
+        isActive: payload.isActive
+      };
+      const res = await fetch(`${BASE}/roles/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}: ${await res.text()}`);
+      saved = await res.json();
+    } else {
+      // ── TẠO MỚI role ──
+      const body = {
+        code: payload.code,
+        name: payload.name,
+        description: payload.description || '',
+        isSystem: payload.isSystem || false,
+        isActive: payload.isActive !== false
+      };
+      const res = await fetch(`${BASE}/roles`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}: ${await res.text()}`);
+      saved = await res.json();
+    }
+
+    // ── GÁN PERMISSIONS (thay thế toàn bộ) ──
+    if (saved && saved.id) {
+      try {
+        const res2 = await fetch(`${BASE}/roles/${saved.id}/permissions`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(permIds)
+        });
+        if (!res2.ok) throw new Error(`HTTP ${res2.status}: ${await res2.text()}`);
+      } catch(e) { toast('Lưu quyền thất bại: ' + e.message, 'error'); }
+    }
+
+    closeModal('roles');
+    toast((id ? 'Cập nhật' : 'Thêm') + ' vai trò thành công!', 'success');
+    await loadData('roles');
+    refreshAllDropdowns();
+  } catch(err) { toast('Lỗi: ' + err.message, 'error'); }
+}
+
 async function seedAcademicYears() {
   const seeds = [
     {code:'K23',name:'Niên khóa 2023-2027',year:'2023-2027',description:'Khóa tuyển sinh 2023, kết thúc 2027',startDate:'2023-09-01',endDate:'2027-06-30',isActive:true,createdAt:now(),updatedAt:now()},

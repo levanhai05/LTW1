@@ -1,11 +1,10 @@
 package com.example.demo.roles.service;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
-import com.example.demo.permissions.model.entity.Permission;
-import com.example.demo.permissions.repository.PermissionRepository;
 import com.example.demo.roles.model.entity.Role;
 import com.example.demo.roles.repository.RoleRepository;
 
@@ -14,21 +13,30 @@ public class RoleService {
 
     private final RoleRepository roleRepo;
 
-    private final PermissionRepository permRepo;
-
-    public RoleService(RoleRepository roleRepo, PermissionRepository permRepo) {
+    public RoleService(RoleRepository roleRepo) {
         this.roleRepo = roleRepo;
-        this.permRepo = permRepo;
     }
 
     public Role createRole(Role role) {
+        if (role.getCreatedAt() == null)
+            role.setCreatedAt(LocalDateTime.now());
+        role.setUpdatedAt(LocalDateTime.now());
         return roleRepo.save(role);
     }
 
-    public Role addPermission(UUID roleId, UUID permId) {
-        Role r = roleRepo.findById(roleId).orElseThrow();
-        Permission p = permRepo.findById(permId).orElseThrow();
-        r.getPermissions().add(p);
+    public Role updateRole(UUID id, Role incoming) {
+        Role r = roleRepo.findById(id).orElseThrow();
+        if (incoming.getCode() != null)
+            r.setCode(incoming.getCode());
+        if (incoming.getName() != null)
+            r.setName(incoming.getName());
+        if (incoming.getDescription() != null)
+            r.setDescription(incoming.getDescription());
+        if (incoming.getIsSystem() != null)
+            r.setIsSystem(incoming.getIsSystem());
+        if (incoming.getIsActive() != null)
+            r.setIsActive(incoming.getIsActive());
+        r.setUpdatedAt(LocalDateTime.now());
         return roleRepo.save(r);
     }
 }

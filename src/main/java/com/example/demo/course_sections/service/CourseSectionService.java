@@ -27,6 +27,7 @@ public class CourseSectionService {
         CourseSection old = getById(id);
         if (old == null) return null;
         old.setCode(updated.getCode());
+        old.setName(updated.getName());
         old.setAcademicYear(updated.getAcademicYear());
         old.setCourseId(updated.getCourseId());
         old.setSemesterId(updated.getSemesterId());
