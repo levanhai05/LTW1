@@ -13,7 +13,7 @@ public class Student {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    private Integer user_id;
+    private UUID user_id;
 
     @Column(name = "code", length = 20)
     private String code;
@@ -42,18 +42,18 @@ public class Student {
     @Column(name = "current_address", length = 300)
     private String current_address;
 
-    private Integer academic_year_year;
+    private UUID academic_year_year;
 
-    private Integer department_id;
+    private UUID department_id;
 
-    private Integer major_id;
+    private UUID major_id;
 
-    private Integer training_program_id;
+    private UUID training_program_id;
 
     @Column(name = "status", length = 50)
     private String status;
 
-    private Integer student_classe_id;
+    private UUID student_classe_id;
 
     @Column(name = "admission_year")
     private Integer admission_year;
@@ -83,7 +83,7 @@ public class Student {
     }
 
     public Student(
-            Integer user_id,
+            UUID user_id,
             String code,
             String fullname,
             LocalDate date_of_birth,
@@ -93,12 +93,12 @@ public class Student {
             String card_place,
             String address,
             String current_address,
-            Integer academic_year_year,
-            Integer department_id,
-            Integer major_id,
-            Integer training_program_id,
+            UUID academic_year_year,
+            UUID department_id,
+            UUID major_id,
+            UUID training_program_id,
             String status,
-            Integer student_classe_id,
+            UUID student_classe_id,
             Integer admission_year,
             LocalDateTime createdAt,
             LocalDateTime updatedAt,
@@ -142,11 +142,11 @@ public class Student {
         this.id = id;
     }
 
-    public Integer getUser_id() {
+    public UUID getUser_id() {
         return user_id;
     }
 
-    public void setUser_id(Integer user_id) {
+    public void setUser_id(UUID user_id) {
         this.user_id = user_id;
     }
 
@@ -222,35 +222,35 @@ public class Student {
         this.current_address = current_address;
     }
 
-    public Integer getAcademic_year_year() {
+    public UUID getAcademic_year_year() {
         return academic_year_year;
     }
 
-    public void setAcademic_year_year(Integer academic_year_year) {
+    public void setAcademic_year_year(UUID academic_year_year) {
         this.academic_year_year = academic_year_year;
     }
 
-    public Integer getDepartment_id() {
+    public UUID getDepartment_id() {
         return department_id;
     }
 
-    public void setDepartment_id(Integer department_id) {
+    public void setDepartment_id(UUID department_id) {
         this.department_id = department_id;
     }
 
-    public Integer getMajor_id() {
+    public UUID getMajor_id() {
         return major_id;
     }
 
-    public void setMajor_id(Integer major_id) {
+    public void setMajor_id(UUID major_id) {
         this.major_id = major_id;
     }
 
-    public Integer getTraining_program_id() {
+    public UUID getTraining_program_id() {
         return training_program_id;
     }
 
-    public void setTraining_program_id(Integer training_program_id) {
+    public void setTraining_program_id(UUID training_program_id) {
         this.training_program_id = training_program_id;
     }
 
@@ -262,11 +262,11 @@ public class Student {
         this.status = status;
     }
 
-    public Integer getStudent_classe_id() {
+    public UUID getStudent_classe_id() {
         return student_classe_id;
     }
 
-    public void setStudent_classe_id(Integer student_classe_id) {
+    public void setStudent_classe_id(UUID student_classe_id) {
         this.student_classe_id = student_classe_id;
     }
 
