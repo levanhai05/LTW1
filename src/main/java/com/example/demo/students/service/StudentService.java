@@ -2,7 +2,6 @@ package com.example.demo.students.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
@@ -22,7 +21,7 @@ public class StudentService {
         return repo.findAll();
     }
 
-    public Student getById(UUID id) {
+    public Student getById(Integer id) {
         return repo.findById(id).orElse(null);
     }
 
@@ -33,12 +32,11 @@ public class StudentService {
         return repo.save(student);
     }
 
-    public Student update(UUID id, Student incoming) {
+    public Student update(Integer id, Student incoming) {
         Student old = getById(id);
         if (old == null)
             return null;
 
-        // Cập nhật toàn bộ các trường có thể sửa
         if (incoming.getCode() != null)
             old.setCode(incoming.getCode());
         if (incoming.getFullname() != null)
@@ -58,7 +56,6 @@ public class StudentService {
         if (incoming.getIsActive() != null)
             old.setIsActive(incoming.getIsActive());
 
-        // Các trường định danh / phân loại
         if (incoming.getAcademic_year_year() != null)
             old.setAcademic_year_year(incoming.getAcademic_year_year());
         if (incoming.getDepartment_id() != null)
@@ -72,7 +69,6 @@ public class StudentService {
         if (incoming.getAdmission_year() != null)
             old.setAdmission_year(incoming.getAdmission_year());
 
-        // CMND / Căn cước
         if (incoming.getPersonal_identification_number() != null)
             old.setPersonal_identification_number(incoming.getPersonal_identification_number());
         if (incoming.getDate_of_issue() != null)
@@ -84,7 +80,7 @@ public class StudentService {
         return repo.save(old);
     }
 
-    public void delete(UUID id) {
+    public void delete(Integer id) {
         repo.deleteById(id);
     }
 
