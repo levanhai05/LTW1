@@ -26,7 +26,6 @@ private UUID id;
     @Column(name = "name", length = 255)
     private String name;
 
-    @Column(columnDefinition = "UNIQUEIDENTIFIER")
     private UUID schoolYearId;
 
     @Column(name = "school_year_name", length = 255)
