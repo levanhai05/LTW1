@@ -11,12 +11,8 @@ import jakarta.persistence.*;
 @Table(name = "permissions")
 public class Permission {
     @Id
-    @GeneratedValue
-    @UuidGenerator   // Hibernate 6+
-    @Column(columnDefinition = "UNIQUEIDENTIFIER",
-            updatable = false,
-            nullable = false)
-    private UUID id;
+@GeneratedValue(strategy = GenerationType.UUID)
+private UUID id;
 
     @Column(name = "code", length = 100)
     private String code;
