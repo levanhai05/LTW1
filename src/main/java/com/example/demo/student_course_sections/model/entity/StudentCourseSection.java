@@ -11,15 +11,11 @@ import java.util.UUID;
 public class StudentCourseSection {
 
     @Id
-    @GeneratedValue
-    @UuidGenerator
-    @Column(columnDefinition = "UNIQUEIDENTIFIER", updatable = false, nullable = false)
-    private UUID id;
+@GeneratedValue(strategy = GenerationType.UUID)
+private UUID id;
 
-    @Column(columnDefinition = "UNIQUEIDENTIFIER")
     private UUID studentId;
 
-    @Column(columnDefinition = "UNIQUEIDENTIFIER")
     private UUID courseSectionId;
 
     @Column(name = "status", length = 50)
@@ -37,16 +33,13 @@ public class StudentCourseSection {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @Column(columnDefinition = "UNIQUEIDENTIFIER")
     private UUID createdBy;
 
-    @Column(columnDefinition = "UNIQUEIDENTIFIER")
     private UUID updatedBy;
 
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
 
-    @Column(columnDefinition = "UNIQUEIDENTIFIER")
     private UUID deletedBy;
 
     @Column(name = "is_active")
