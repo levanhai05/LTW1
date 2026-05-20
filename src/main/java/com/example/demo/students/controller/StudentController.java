@@ -1,7 +1,6 @@
 package com.example.demo.students.controller;
 
 import java.util.List;
-import java.util.UUID;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,11 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.demo.students.model.entity.Student;
 import com.example.demo.students.service.StudentService;
 
-
-
 @RestController
 @RequestMapping("/api/students")
-@CrossOrigin // cho phép frontend gọi
+@CrossOrigin
 public class StudentController {
 
     private final StudentService service;
@@ -30,41 +27,34 @@ public class StudentController {
         this.service = service;
     }
 
-    // GET ALL
     @GetMapping
     public List<Student> getAll() {
         return service.getAll();
     }
 
-    // GET BY ID
     @GetMapping("/{id}")
-    public Student getById(@PathVariable UUID id) {
+    public Student getById(@PathVariable Integer id) {
         return service.getById(id);
     }
 
-    // CREATE
     @PostMapping
     public Student create(@RequestBody Student student) {
         return service.create(student);
     }
 
-    // UPDATE
     @PutMapping("/{id}")
-    public Student update(@PathVariable UUID id,
+    public Student update(@PathVariable Integer id,
                           @RequestBody Student student) {
         return service.update(id, student);
     }
 
-    // DELETE
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable UUID id) {
+    public void delete(@PathVariable Integer id) {
         service.delete(id);
     }
 
-    // SEARCH BY NAME
     @GetMapping("/search")
     public List<Student> search(@RequestParam String full_name) {
         return service.search(full_name);
     }
-
 }
